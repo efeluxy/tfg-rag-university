@@ -1,0 +1,131 @@
+"""Área de chat: historial de mensajes, input y lógica de invocación del grafo."""
+
+import logging
+import sys
+from pathlib import Path
+
+import streamlit as st
+
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from src.graph.state import get_initial_state
+from app.components.sources_panel import format_sources_html
+
+logger = logging.getLogger(__name__)
+
+
+def process_message(user_input: str) -> None:
+    """Invoca el grafo LangGraph y añade la respuesta al historial."""
+    try:
+        state = get_initial_state(
+            user_message=user_input,
+            session_id=st.session_state.session_id,
+            user_id=st.session_state.selected_student,
+        )
+        config = {
+            "configurable": {
+                "thread_id": st.session_state.session_id
+            }
+        }
+        resultado = st.session_state.graph.invoke(state, config=config)
+
+        final_response = resultado.get("final_response") or ""
+        sources = resultado.get("sources", [])
+        confidence = resultado.get("confidence", 0.0)
+
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": final_response,
+            "sources": sources,
+            "confidence": confidence,
+        })
+    except Exception as exc:
+        logger.error("Error invocando el grafo: %s", exc, exc_info=True)
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": (
+                "Lo siento, ha ocurrido un error al procesar tu consulta. "
+                "Por favor, inténtalo de nuevo."
+            ),
+            "sources": [],
+            "confidence": 0.0,
+        })
+
+
+def render_chat() -> None:
+    """Renderiza el área de chat con historial, indicador de escritura e input."""
+
+    # 1. CABECERA
+    selected = st.session_state.get("selected_student")
+    if selected:
+        students = st.session_state.get("students_list", [])
+        nombre = next((s["name"] for s in students if s["id"] == selected), selected)
+        st.markdown(
+            f"<h3 style='color:#1F4E8A; margin-bottom:4px;'>"
+            f"💬 Asistente de Orientación Universitaria — {nombre}</h3>",
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            "<h3 style='color:#1F4E8A; margin-bottom:4px;'>"
+            "💬 Asistente de Orientación Universitaria</h3>",
+            unsafe_allow_html=True,
+        )
+        st.caption("Conversando como visitante")
+
+    st.markdown("---")
+
+    # 2. ÁREA DE MENSAJES
+    mensajes = st.session_state.get("messages", [])
+    for msg in mensajes:
+        role = msg.get("role")
+        content = msg.get("content", "")
+        sources = msg.get("sources", [])
+        confidence = msg.get("confidence", 1.0)
+
+        if role == "user":
+            st.markdown(
+                '<p style="font-size:0.78rem; color:#555577; margin:8px 0 2px 0;">👤 Tú</p>'
+                f'<div class="burbuja-usuario">{content}</div>',
+                unsafe_allow_html=True,
+            )
+        elif role == "assistant":
+            st.markdown(
+                '<p style="font-size:0.78rem; color:#555577; margin:8px 0 2px 0;">🎓 Asistente Univ</p>'
+                f'<div class="burbuja-asistente">{content}</div>',
+                unsafe_allow_html=True,
+            )
+            if sources and len(sources) > 0:
+                with st.expander(f"📎 Fuentes consultadas ({len(sources)})"):
+                    st.markdown(
+                        f'<div class="fuentes-box">{format_sources_html(sources)}</div>',
+                        unsafe_allow_html=True,
+                    )
+            if confidence < 0.6:
+                st.markdown(
+                    '<p style="font-size:0.8rem; color:#888;">'
+                    "ℹ️ Respuesta basada en conocimiento general</p>",
+                    unsafe_allow_html=True,
+                )
+
+    # 3. INDICADOR DE ESCRITURA
+    if st.session_state.get("processing"):
+        st.markdown(
+            """
+            <div class="typing-indicator">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <span style="margin-left:8px;color:#555">El asistente está procesando...</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # 4. INPUT Y ENVÍO
+    user_input = st.chat_input("Escribe tu consulta aquí...")
+    if user_input and user_input.strip():
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        st.session_state.processing = True
+        process_message(user_input)
+        st.session_state.processing = False
+        st.rerun()
