@@ -93,6 +93,7 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
             ],
             temperature=0.7,
             max_tokens=1000,
+            timeout=20,
         )
         final_response = response.choices[0].message.content.strip()
 

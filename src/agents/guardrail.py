@@ -46,6 +46,7 @@ def run_guardrail(state: UniversityAssistantState) -> Dict[str, Any]:
             ],
             temperature=0.0,
             max_tokens=400,
+            timeout=20,
         )
         raw = response.choices[0].message.content.strip()
         logger.debug("Guardrail raw response: %s", raw)

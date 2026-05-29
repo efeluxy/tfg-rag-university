@@ -13,7 +13,7 @@ from src.graph.graph import get_graph
 from src.graph.state import get_initial_state  # noqa: F401 — disponible para importadores
 from src.config.settings import SQLITE_DB_PATH
 from app.components.sidebar import render_sidebar
-from app.components.chat import render_chat
+from app.components.chat import render_chat, process_message
 
 # ── Configuración de página (primera llamada Streamlit) ──────────────
 st.set_page_config(
@@ -60,6 +60,8 @@ if "processing" not in st.session_state:
     st.session_state.processing = False
 if "students_list" not in st.session_state:
     st.session_state.students_list = load_students_list()
+if "pending_message" not in st.session_state:
+    st.session_state.pending_message = None
 
 # ── Layout principal ─────────────────────────────────────────────────
 col_sidebar, col_chat = st.columns([1, 2.5])
@@ -69,3 +71,19 @@ with col_sidebar:
 
 with col_chat:
     render_chat()
+
+# Procesar mensaje pendiente (segundo rerun — fuera de columnas)
+if st.session_state.processing and st.session_state.pending_message:
+    msg_to_process = st.session_state.pending_message
+    st.session_state.pending_message = None
+    process_message(msg_to_process)
+    st.session_state.processing = False
+    st.rerun()
+
+# Input de chat a nivel top, fuera de columnas (evita duplicacion de UI)
+user_input = st.chat_input("Escribe tu consulta aqui...")
+if user_input and user_input.strip() and not st.session_state.processing:
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    st.session_state.pending_message = user_input
+    st.session_state.processing = True
+    st.rerun()

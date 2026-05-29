@@ -120,12 +120,3 @@ def render_chat() -> None:
             """,
             unsafe_allow_html=True,
         )
-
-    # 4. INPUT Y ENVÍO
-    user_input = st.chat_input("Escribe tu consulta aquí...")
-    if user_input and user_input.strip():
-        st.session_state.messages.append({"role": "user", "content": user_input})
-        st.session_state.processing = True
-        process_message(user_input)
-        st.session_state.processing = False
-        st.rerun()

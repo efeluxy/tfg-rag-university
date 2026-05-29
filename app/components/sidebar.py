@@ -161,7 +161,7 @@ def render_sidebar():
         """
         <div style="font-size:0.75rem; color:#888; text-align:center; line-height:1.8;">
           🟢 Azure AI Search conectado<br>
-          v1.0 — TFG 2025<br>
+          v1.0 — TFG 2026<br>
           94 chunks indexados
         </div>
         """,

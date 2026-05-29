@@ -49,6 +49,7 @@ def _generate_queries(key_points: List[str], intent: str, user_message: str) -> 
             ],
             temperature=0.0,
             max_tokens=200,
+            timeout=20,
         )
         raw = response.choices[0].message.content.strip()
         if raw.startswith("```"):

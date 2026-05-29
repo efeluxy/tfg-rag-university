@@ -73,4 +73,10 @@ def get_openai_client():
     if not key:
         raise ValueError("AZURE_OPENAI_API_KEY no está configurado en .env")
 
-    return AzureOpenAI(azure_endpoint=endpoint, api_key=key, api_version=api_version)
+    return AzureOpenAI(
+        azure_endpoint=endpoint,
+        api_key=key,
+        api_version=api_version,
+        timeout=30.0,
+        max_retries=2,
+    )

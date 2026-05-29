@@ -69,6 +69,7 @@ def run_router(state: UniversityAssistantState) -> Dict[str, Any]:
             ],
             temperature=0.0,
             max_tokens=300,
+            timeout=20,
         )
         raw = response.choices[0].message.content.strip()
         logger.debug("Router raw response: %s", raw)
