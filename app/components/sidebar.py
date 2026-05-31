@@ -167,3 +167,17 @@ def render_sidebar():
         """,
         unsafe_allow_html=True,
     )
+    st.markdown(
+        """
+        <div style="font-size:0.70rem; color:#888; text-align:center;
+                    line-height:1.5; padding:8px; margin-top:10px;
+                    border-top:1px solid #333;">
+          🛡️ <b>Aviso de seguridad:</b><br>
+          Si el sistema detecta una situación de crisis emocional grave,
+          se generará un aviso automático al Servicio de Orientación
+          Psicológica de la Universidad para que puedan contactar contigo
+          cuanto antes.
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )

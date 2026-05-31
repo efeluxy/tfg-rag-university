@@ -49,6 +49,12 @@ class UniversityAssistantState(TypedDict):
     # ── Historial de conversación ────────────────────────────────────
     message_history:         Annotated[List[dict], operator.add]
 
+    # Tiers emocionales y alertas
+    emotional_tier:          int             # 0=ninguno, 1, 2, 3
+    emotional_tier_label:    Optional[str]   # "academic_stress" | "emotional_distress" | "crisis_grave"
+    alert_generated:         bool            # True si tier 3 disparo alerta
+    alert_id:                Optional[str]   # ID de la alerta generada
+
 
 def get_initial_state(
     user_message: str,
@@ -73,4 +79,8 @@ def get_initial_state(
         sources=[],
         confidence=0.0,
         message_history=[],
+        emotional_tier=0,
+        emotional_tier_label=None,
+        alert_generated=False,
+        alert_id=None,
     )

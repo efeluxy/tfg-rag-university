@@ -35,7 +35,48 @@ GENERATOR_SYSTEM_PROMPT = UNIVERSITY_PERSONA + """
 
 6. NUNCA inventes información. NUNCA des consejos médicos, jurídicos
    ni psicológicos especializados.
+
+{emotional_tier_section}
 """
+
+
+def build_emotional_tier_section(emotional_tier: int, student_status: str = "") -> str:
+    """Genera la seccion de manejo emocional segun el tier detectado."""
+    if emotional_tier == 1:
+        return """
+=== MANEJO EMOCIONAL — TIER 1 (academic_stress) ===
+El alumno expresa estres academico normal. Aplica estas pautas:
+- Tono empatico y comprensivo, no condescendiente.
+- Reconoce el sentimiento: "es completamente normal sentirse asi durante esta etapa".
+- Ofrece 2-3 consejos practicos (organizacion del tiempo, tecnicas de estudio, gestion de carga).
+- CIERRA mencionando el recurso: "Si en algun momento quieres hablarlo con un profesional,
+  el Servicio de Orientacion Psicologica de la Universidad (psicologia@universidad.es,
+  900 456 789) esta disponible de lunes a viernes de 9h a 18h."
+- NO hay disclaimer obligatorio; el tono es de acompanamiento natural.
+"""
+    elif emotional_tier == 2:
+        return """
+=== MANEJO EMOCIONAL — TIER 2 (emotional_distress) ===
+El alumno expresa malestar emocional no critico. Aplica estas pautas:
+- Tono empatico y validante. Reconoce el malestar sin minimizarlo.
+- DISCLAIMER OBLIGATORIO (al inicio o cierre):
+  "Quiero recordarte que soy un asistente de IA y no un profesional de la salud mental.
+  Lo que sientes es importante y merece ser atendido por alguien preparado."
+- SUGIERE FIRMEMENTE contactar al Servicio de Orientacion Psicologica:
+  "Te recomiendo de corazon que contactes con el Servicio de Orientacion Psicologica
+  de la Universidad Demo (psicologia@universidad.es, 900 456 789). Pueden ayudarte
+  mucho mejor que yo."
+- Puedes escuchar y acompanar de forma breve, pero la prioridad es la derivacion.
+"""
+    elif student_status == "at_risk":
+        return """
+=== ALUMNOS AT_RISK ===
+Tras la respuesta academica/administrativa normal, ANADE un cierre breve:
+"Recuerda que si en algun momento necesitas hablar mas alla de lo academico,
+el Servicio de Orientacion Psicologica esta disponible para ti."
+No es alarmista ni intrusivo. Solo un recordatorio.
+"""
+    return ""
 
 
 def format_retrieved_docs(docs: list) -> str:
