@@ -14,6 +14,7 @@ from src.graph.state import get_initial_state  # noqa: F401 — disponible para 
 from src.config.settings import SQLITE_DB_PATH
 from app.components.sidebar import render_sidebar
 from app.components.chat import render_chat, process_message
+from app.components.login import render_login
 
 # ── Configuración de página (primera llamada Streamlit) ──────────────
 st.set_page_config(
@@ -48,6 +49,12 @@ def load_students_list() -> list:
 
 
 # ── Inicialización de session_state ─────────────────────────────────
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+if "role" not in st.session_state:
+    st.session_state.role = None
+if "authenticated_user_id" not in st.session_state:
+    st.session_state.authenticated_user_id = None
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
 if "messages" not in st.session_state:
@@ -62,6 +69,11 @@ if "students_list" not in st.session_state:
     st.session_state.students_list = load_students_list()
 if "pending_message" not in st.session_state:
     st.session_state.pending_message = None
+
+# ── Gatekeeper de autenticacion ──────────────────────────────────────
+if not st.session_state.authenticated:
+    render_login()
+    st.stop()
 
 # ── Layout principal ─────────────────────────────────────────────────
 col_sidebar, col_chat = st.columns([1, 2.5])

@@ -54,23 +54,35 @@ def process_message(user_input: str) -> None:
 def render_chat() -> None:
     """Renderiza el área de chat con historial, indicador de escritura e input."""
 
-    # 1. CABECERA
+    # 1. CABECERA (rol-aware)
+    role = st.session_state.get("role", "guest")
     selected = st.session_state.get("selected_student")
-    if selected:
-        students = st.session_state.get("students_list", [])
-        nombre = next((s["name"] for s in students if s["id"] == selected), selected)
-        st.markdown(
-            f"<h3 style='color:#1F4E8A; margin-bottom:4px;'>"
-            f"💬 Asistente de Orientación Universitaria — {nombre}</h3>",
-            unsafe_allow_html=True,
+    students = st.session_state.get("students_list", [])
+
+    if role == "guest":
+        subtitulo = "Modo invitado -- consultas publicas"
+    elif role == "student":
+        nombre = next(
+            (s["name"] for s in students if s["id"] == selected), selected or ""
         )
+        subtitulo = f"Sesion de estudiante -- {nombre}"
+    elif role == "admin":
+        if selected:
+            nombre = next(
+                (s["name"] for s in students if s["id"] == selected), selected
+            )
+            subtitulo = f"Modo administrador -- consultando como {nombre}"
+        else:
+            subtitulo = "Modo administrador -- sin alumno seleccionado"
     else:
-        st.markdown(
-            "<h3 style='color:#1F4E8A; margin-bottom:4px;'>"
-            "💬 Asistente de Orientación Universitaria</h3>",
-            unsafe_allow_html=True,
-        )
-        st.caption("Conversando como visitante")
+        subtitulo = ""
+
+    st.markdown(
+        "<h3 style='color:#1F4E8A; margin-bottom:4px;'>"
+        "Asistente de Orientacion Universitaria</h3>",
+        unsafe_allow_html=True,
+    )
+    st.caption(subtitulo)
 
     st.markdown("---")
 
