@@ -47,6 +47,9 @@ class UniversityAssistantState(TypedDict):
     student_record:          Optional[dict]  # salida de get_full_student_record()
     subject_attempts:        Optional[List[dict]]  # convocatorias por asignatura
     student_grades:          Optional[List[dict]]  # histórico de notas
+    multi_student_records:   Optional[List[dict]]  # varios expedientes (solo admin)
+    multi_student_truncated: bool            # True si el rango fue truncado
+    multi_student_limit:     int             # límite aplicado al rango
 
     # ── Respuesta final ──────────────────────────────────────────────
     final_response:          Optional[str]
@@ -93,6 +96,9 @@ def get_initial_state(
         student_record=None,
         subject_attempts=None,
         student_grades=None,
+        multi_student_records=None,
+        multi_student_truncated=False,
+        multi_student_limit=0,
         final_response=None,
         sources=[],
         confidence=0.0,

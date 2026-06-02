@@ -18,6 +18,7 @@ from src.graph.state import UniversityAssistantState
 from src.prompts.generator_prompt import (
     GENERATOR_SYSTEM_PROMPT,
     build_emotional_tier_section,
+    format_multi_student_records,
     format_retrieved_docs,
     format_student_context,
     format_student_grades,
@@ -190,18 +191,29 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
     student_record = state.get("student_record")
     subject_attempts = state.get("subject_attempts")
     student_grades = state.get("student_grades")
+    multi_records = state.get("multi_student_records") or []
+    multi_truncated = state.get("multi_student_truncated", False)
+    multi_limit = state.get("multi_student_limit", 20)
     role = state.get("role", "guest")
 
     student_status = ""
-    if student_record:
+    if student_record and not multi_records:
         profile = student_record.get("profile", {})
         student_status = profile.get("status", "")
+
+    logger.info(
+        "Generator: multi_records=%d truncated=%s",
+        len(multi_records), multi_truncated,
+    )
 
     # Construir secciones del prompt
     conv_history = state.get("conversation_history") or []
     history_section = format_history_for_llm(conv_history)
 
-    student_context = format_student_context(student_record)
+    multi_student_block = format_multi_student_records(
+        multi_records, truncated=multi_truncated, limit=multi_limit or 20,
+    )
+    student_context = format_student_context(student_record if not multi_records else None)
     subject_attempts_formatted = format_subject_attempts(subject_attempts)
     student_grades_formatted = format_student_grades(student_grades)
     retrieved_docs_formatted = format_retrieved_docs(retrieved_docs)
@@ -209,6 +221,7 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
 
     system_prompt = GENERATOR_SYSTEM_PROMPT.format(
         history_section=history_section,
+        multi_student_block=multi_student_block,
         student_context=student_context,
         subject_attempts_formatted=subject_attempts_formatted,
         student_grades_formatted=student_grades_formatted,

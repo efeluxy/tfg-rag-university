@@ -32,6 +32,10 @@ REGLAS ESTRICTAS DE PRIVACIDAD:
      - "Por proteccion de datos, solo puedo ofrecerte informacion
         sobre tu propio expediente."
 
+── CONSULTA MÚLTIPLE DE ALUMNOS (SOLO ADMIN) ──
+
+{multi_student_block}
+
 === CONTEXTO DEL ALUMNO ===
 {student_context}
 (Si está vacío, el usuario no está identificado. Responde en términos generales.)
@@ -116,6 +120,25 @@ Ten en cuenta el tono segun el rendimiento:
   - Si las notas son bajas: tono empatico, ofrecer ayuda.
   - Si hay asignaturas pendientes: orientacion sobre opciones.
 
+── INSTRUCCIÓN CONSULTA MÚLTIPLE ──
+
+Si el contexto contiene la sección
+"EXPEDIENTES SOLICITADOS (CONSULTA MÚLTIPLE)", presenta la información
+organizada en BLOQUES claros, uno por alumno, en el orden en que aparecen.
+
+Formato recomendado:
+
+  ## ALU001 — Nombre Completo
+  - Grado: ...  |  Curso: ...  |  Media: ...  |  Estado: ...
+  - Progreso: X/240 créditos
+  - Asignaturas: N aprobadas, M suspensas, P pendientes
+
+  ## ALU002 — ...
+  (similar para cada alumno)
+
+Si el bloque incluye una nota de truncación, inclúyela al final.
+NUNCA digas "[Información no disponible]" si los datos están en el bloque.
+
 ── RESPUESTAS A CONSULTAS ENUMERATIVAS ──
 
 Si el usuario pide un listado completo (todos los grados, todas las becas,
@@ -173,6 +196,37 @@ el Servicio de Orientacion Psicologica esta disponible para ti."
 No es alarmista ni intrusivo. Solo un recordatorio.
 """
     return ""
+
+
+def format_multi_student_records(
+    multi_records: list | None,
+    truncated: bool = False,
+    limit: int = 20,
+) -> str:
+    """Formatea varios expedientes de alumno para el prompt del Generator."""
+    if not multi_records:
+        return ""
+    lines = ["\n── EXPEDIENTES SOLICITADOS (CONSULTA MÚLTIPLE) ──"]
+    for r in multi_records:
+        summary = r.get("_attempts_summary", {})
+        lines.append(
+            f"\n• {r.get('id', '?')} — {r.get('name', '?')}\n"
+            f"    Grado: {r.get('degree', '?')}\n"
+            f"    Curso: {r.get('year', '?')}\n"
+            f"    Media (GPA): {r.get('gpa', '?')}\n"
+            f"    Estado: {r.get('status', '?')}\n"
+            f"    Créditos: {r.get('credits_completed', 0)}/"
+            f"{r.get('credits_total', 240)}\n"
+            f"    Asignaturas: {summary.get('passed', 0)} aprobadas, "
+            f"{summary.get('failed_last', 0)} suspensas, "
+            f"{summary.get('pending', 0)} pendientes"
+        )
+    if truncated:
+        lines.append(
+            f"\n[NOTA: el rango solicitado excede el límite de {limit} alumnos "
+            f"por consulta. Solo se han incluido los {limit} primeros.]"
+        )
+    return "\n".join(lines)
 
 
 def format_retrieved_docs(docs: list) -> str:

@@ -25,6 +25,19 @@ PASO 5 - Clasifica el intent en exactamente UNO de estos valores:
            OUT_OF_SCOPE          → tema completamente ajeno a la universidad
            GREETING              → saludo, presentación, agradecimiento
 
+── RANGOS DE ALUMNOS ──
+
+Si el mensaje incluye un rango numérico de alumnos ("del 1 al 5",
+"ALU001 a ALU005", "1-5") clasifica como ACADEMIC_ORIENTATION con
+requires_student_data=True. El control de acceso por rol se gestiona
+en otra capa del sistema.
+
+Ejemplos de rangos:
+  - "Dame info del 1 al 5"         → ACADEMIC_ORIENTATION, requires_student_data=True
+  - "Del 1 al 100"                 → ACADEMIC_ORIENTATION, requires_student_data=True
+  - "ALU001 a ALU005"              → ACADEMIC_ORIENTATION, requires_student_data=True
+  - "Info de los alumnos 1-10"     → ACADEMIC_ORIENTATION, requires_student_data=True
+
 ── IMPORTANTE: CONSULTAS SOBRE ALUMNOS ──
 
 Si el mensaje menciona explicitamente un código de alumno (ALUxxx) o un
