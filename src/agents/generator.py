@@ -20,6 +20,7 @@ from src.prompts.generator_prompt import (
     build_emotional_tier_section,
     format_retrieved_docs,
     format_student_context,
+    format_student_grades,
     format_subject_attempts,
 )
 from src.utils.conversation import format_history_for_llm
@@ -120,6 +121,45 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
             ],
         }
 
+    # --- Violacion de privacidad: rechazo amable sin LLM ---
+    if state.get("access_violation_attempted"):
+        role = state.get("role", "guest")
+        if role == "guest":
+            privacy_response = (
+                "Como invitado, no tengo acceso a datos personales de "
+                "alumnos especificos. Solo puedo proporcionarte "
+                "informacion publica sobre la universidad, sus grados, "
+                "becas y normativa general. Si eres un alumno, puedes "
+                "iniciar sesion para acceder a tu expediente. Si eres "
+                "personal administrativo, accede con el rol de "
+                "administrador."
+            )
+        elif role == "student":
+            privacy_response = (
+                "Por proteccion de datos, solo puedo ofrecerte "
+                "informacion sobre tu propio expediente, no sobre el de "
+                "otros alumnos. Si necesitas datos de otros estudiantes "
+                "por motivos administrativos, contacta con la "
+                "Secretaria Academica."
+            )
+        else:
+            privacy_response = (
+                "Lo siento, no puedo procesar esa consulta en este momento."
+            )
+        logger.info(
+            "Generator: violacion de privacidad detectada — role=%s, devolviendo rechazo",
+            role,
+        )
+        return {
+            "final_response": privacy_response,
+            "sources": [],
+            "confidence": 1.0,
+            "message_history": [
+                {"role": "user", "content": user_message},
+                {"role": "assistant", "content": privacy_response},
+            ],
+        }
+
     # --- Out of scope / inapropiado: ya existe safe_response en state ---
     if guardrail_triggered and existing_response:
         logger.info("Generator: guardrail out_of_scope — devolviendo safe_response sin LLM")
@@ -137,6 +177,8 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
     retrieved_docs = state.get("retrieved_docs", [])
     student_record = state.get("student_record")
     subject_attempts = state.get("subject_attempts")
+    student_grades = state.get("student_grades")
+    role = state.get("role", "guest")
 
     student_status = ""
     if student_record:
@@ -149,6 +191,7 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
 
     student_context = format_student_context(student_record)
     subject_attempts_formatted = format_subject_attempts(subject_attempts)
+    student_grades_formatted = format_student_grades(student_grades)
     retrieved_docs_formatted = format_retrieved_docs(retrieved_docs)
     emotional_tier_section = build_emotional_tier_section(emotional_tier, student_status)
 
@@ -156,8 +199,10 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
         history_section=history_section,
         student_context=student_context,
         subject_attempts_formatted=subject_attempts_formatted,
+        student_grades_formatted=student_grades_formatted,
         retrieved_docs_formatted=retrieved_docs_formatted,
         emotional_tier_section=emotional_tier_section,
+        role=role,
     )
 
     try:
@@ -170,8 +215,8 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
                 {"role": "user", "content": user_message},
             ],
             temperature=0.7,
-            max_tokens=1000,
-            timeout=20,
+            max_tokens=4096,  # elevado para permitir respuestas largas (planes de estudio, listados)
+            timeout=30,
         )
         final_response = response.choices[0].message.content.strip()
 

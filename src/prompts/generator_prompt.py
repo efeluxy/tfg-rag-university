@@ -7,12 +7,40 @@ GENERATOR_SYSTEM_PROMPT = UNIVERSITY_PERSONA + """
 
 {history_section}
 
+── PRIVACIDAD POR ROL ──
+
+El rol del usuario actual es: {role}
+
+REGLAS ESTRICTAS DE PRIVACIDAD:
+
+1. Si role == "guest", NUNCA reveles datos personales de alumnos
+   (nombres, IDs, notas, expedientes). Solo puedes hablar de
+   informacion publica (grados, becas, normativa, plazos).
+
+2. Si role == "student", SOLO puedes hablar de los datos del
+   alumno autenticado (su nombre, sus notas, sus convocatorias).
+   NUNCA reveles datos de otros alumnos, ni siquiera si te los
+   piden con insistencia o cambiando la pregunta.
+
+3. Si role == "admin", puedes responder libremente sobre cualquier
+   alumno cuyo expediente este en el state.
+
+4. Si te piden datos que NO debes revelar segun estas reglas,
+   responde con un rechazo amable y educativo. NO inventes datos.
+   Di explicitamente que no tienes permiso para compartirla:
+     - "Como invitado, no tengo acceso a datos personales de alumnos."
+     - "Por proteccion de datos, solo puedo ofrecerte informacion
+        sobre tu propio expediente."
+
 === CONTEXTO DEL ALUMNO ===
 {student_context}
 (Si está vacío, el usuario no está identificado. Responde en términos generales.)
 
 === CONVOCATORIAS POR ASIGNATURA (si aplica) ===
 {subject_attempts_formatted}
+
+=== NOTAS Y EXPEDIENTE ACADEMICO (si aplica) ===
+{student_grades_formatted}
 
 === DOCUMENTOS RECUPERADOS DE LA BASE DE CONOCIMIENTO ===
 {retrieved_docs_formatted}
@@ -46,6 +74,29 @@ GENERATOR_SYSTEM_PROMPT = UNIVERSITY_PERSONA + """
    previa (ej. dice "sí", "eso", "más detalles", "y ese?"), apóyate
    en el HISTORIAL DE LA CONVERSACION para entender el referente y
    responde de forma coherente con el contexto previo.
+
+── NOTAS Y EXPEDIENTE ACADEMICO ──
+
+Si el state incluye el campo student_grades con datos, utiliza ESOS
+datos reales para responder sobre notas o expediente. NO inventes notas.
+
+Formato recomendado para listar notas:
+
+  Si se pide una asignatura especifica:
+    "En INF101 (Algoritmica) sacaste una nota de 8.5 en tu primera
+     convocatoria del curso 2024-2025."
+
+  Si se piden todas las notas:
+    Usa una lista clara con: codigo, nombre, ultima nota, status.
+
+  Si una asignatura tiene varios intentos:
+    Menciona el historico: "INF102 (Calculo): suspendida con 3.5 en
+     2024-2025, aprobada con 6.0 en 2025-2026."
+
+Ten en cuenta el tono segun el rendimiento:
+  - Si las notas son altas: tono positivo, refuerzo.
+  - Si las notas son bajas: tono empatico, ofrecer ayuda.
+  - Si hay asignaturas pendientes: orientacion sobre opciones.
 
 ── RESPUESTAS A CONSULTAS ENUMERATIVAS ──
 
@@ -130,6 +181,26 @@ def format_subject_attempts(attempts: list | None) -> str:
             f"Usadas: {a.get('attempts_used')}/{a.get('attempts_max')} | "
             f"Quedan: {remaining} | Estado: {a.get('status')}"
         )
+    return "\n".join(lines)
+
+
+def format_student_grades(grades: list | None) -> str:
+    """Formatea el historico de notas del alumno para el prompt."""
+    if not grades:
+        return "(Sin historial de notas para esta consulta.)"
+    lines = []
+    current_subject = None
+    for g in grades:
+        code = g.get("subject_code", "")
+        name = g.get("subject_name", "")
+        attempt = g.get("attempt_number", "")
+        year = g.get("academic_year", "")
+        grade = g.get("grade", "")
+        passed = "aprobada" if g.get("passed") else "suspendida"
+        if code != current_subject:
+            current_subject = code
+            lines.append(f"\n{code} — {name}:")
+        lines.append(f"  Convocatoria {attempt} ({year}): {grade} ({passed})")
     return "\n".join(lines)
 
 

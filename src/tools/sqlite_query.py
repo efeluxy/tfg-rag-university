@@ -250,6 +250,48 @@ def get_academic_standing(student_id: str) -> dict:
         return {"error": f"Error de base de datos: {exc}"}
 
 
+def get_student_grades(
+    student_id: str,
+    subject_code: Optional[str] = None,
+    only_passed: bool = False,
+) -> list[dict]:
+    """Devuelve historico de notas de un alumno por convocatoria.
+
+    Args:
+        student_id: Identificador del alumno.
+        subject_code: Filtra por asignatura si se indica.
+        only_passed: Si True, solo devuelve convocatorias superadas.
+
+    Returns:
+        Lista de dicts con subject_code, subject_name, attempt_number,
+        academic_year, grade, passed.
+    """
+    if not student_id:
+        return []
+    query = (
+        "SELECT subject_code, subject_name, attempt_number, "
+        "academic_year, grade, passed "
+        "FROM student_grades "
+        "WHERE student_id = ?"
+    )
+    params: list = [student_id]
+    if subject_code:
+        query += " AND UPPER(subject_code) = ?"
+        params.append(subject_code.upper())
+    if only_passed:
+        query += " AND passed = 1"
+    query += " ORDER BY subject_code, attempt_number"
+
+    try:
+        with sqlite3.connect(_get_db_path()) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(query, params).fetchall()
+        return [dict(r) for r in rows]
+    except sqlite3.Error as exc:
+        logger.error("Error consultando grades: %s", exc)
+        return []
+
+
 def get_subject_attempts(
     student_id: str,
     subject_code: Optional[str] = None,

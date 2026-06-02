@@ -108,7 +108,12 @@ def run_tests() -> dict:
         print(f"[{cid}] {caso['descripcion']}")
         print(f"{'─'*55}")
 
-        state = get_initial_state(caso["mensaje"], f"test-{cid}", caso["user_id"])
+        uid = caso["user_id"]
+        state = get_initial_state(
+            caso["mensaje"], f"test-{cid}", uid,
+            role="student" if uid else "guest",
+            authenticated_user_id=uid,
+        )
         config = {"configurable": {"thread_id": f"test-{cid}"}}
 
         try:

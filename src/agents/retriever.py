@@ -18,6 +18,7 @@ from src.config.settings import MAX_RETRIEVED_DOCS, TOP_K_DEFAULT
 from src.graph.state import UniversityAssistantState
 from src.prompts.retriever_prompt import RETRIEVER_SYSTEM_PROMPT
 from src.tools.azure_search import search_knowledge_base
+from src.utils.synonyms import expand_query_with_synonyms
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +89,7 @@ def run_retriever(state: UniversityAssistantState) -> Dict[str, Any]:
         logger.debug("Retriever: omitiendo recuperación para intent=%s", intent)
         return {"retrieved_docs": [], "search_queries": []}
 
-    # Query expansion simple cuando el mensaje es corto y hay historial
+    # Query expansion: primero historial, luego sinonimos
     history = state.get("conversation_history") or state.get("message_history", [])
     enriched_query = user_message
     if len(user_message.split()) < 5 and history:
@@ -99,7 +100,15 @@ def run_retriever(state: UniversityAssistantState) -> Dict[str, Any]:
         if last_assistant:
             enriched_query = f"{last_assistant[:300]} {user_message}"
 
-    queries = _generate_queries(key_points, intent, enriched_query)
+    # Aplicar expansion por sinonimos
+    final_query = expand_query_with_synonyms(enriched_query)
+    logger.info(
+        "Retriever: query_original='%s' -> query_final='%s'",
+        user_message[:60],
+        final_query[:80],
+    )
+
+    queries = _generate_queries(key_points, intent, final_query)
     logger.info("Retriever: queries generadas — %s", queries)
 
     # Top-k dinamico: mas chunks para consultas enumerativas
@@ -109,7 +118,7 @@ def run_retriever(state: UniversityAssistantState) -> Dict[str, Any]:
     all_docs: List[dict] = []
 
     for query in queries:
-        results = search_knowledge_base(query, top_k=top_k)
+        results = search_knowledge_base(expand_query_with_synonyms(query), top_k=top_k)
         for doc in results:
             dedup_key = (doc.get("source_file", ""), doc.get("section", ""))
             if dedup_key not in seen:

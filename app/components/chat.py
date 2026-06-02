@@ -26,6 +26,8 @@ def process_message(user_input: str) -> None:
             session_id=st.session_state.session_id,
             user_id=st.session_state.selected_student,
             conversation_history=history,
+            role=st.session_state.get("role", "guest"),
+            authenticated_user_id=st.session_state.get("authenticated_user_id"),
         )
         config = {
             "configurable": {

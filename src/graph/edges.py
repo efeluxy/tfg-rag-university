@@ -4,7 +4,11 @@ Cada función recibe el State completo y devuelve el nombre del siguiente nodo.
 Ninguna función modifica el State.
 """
 
+import re
+
 from src.graph.state import UniversityAssistantState
+
+_ALU_ID_RE = re.compile(r"\bALU\d{3,}\b", re.IGNORECASE)
 
 
 def route_after_router(state: UniversityAssistantState) -> str:
@@ -46,9 +50,9 @@ def route_after_guardrail(state: UniversityAssistantState) -> str:
 def route_after_retriever(state: UniversityAssistantState) -> str:
     """Decide si después del Retriever se consulta el expediente del alumno.
 
-    - Si requires_student_data=True o requires_subject_detail=True,
-      Y user_id no es None ni vacío: ir a "student_data".
-    - En cualquier otro caso: ir directamente a "generator".
+    Routea a student_data si:
+    - requires_student_data=True o requires_subject_detail=True y hay user_id, O
+    - El mensaje menciona explicitamente un ALU ID (para control de acceso).
 
     Returns:
         "student_data" | "generator"
@@ -56,6 +60,14 @@ def route_after_retriever(state: UniversityAssistantState) -> str:
     requires = state.get("requires_student_data", False)
     requires_detail = state.get("requires_subject_detail", False)
     user_id = state.get("user_id")
+    user_message = state.get("user_message", "")
+
     if (requires or requires_detail) and user_id and str(user_id).strip():
         return "student_data"
+
+    # Siempre pasar por student_data si el mensaje menciona un ALU ID
+    # (para aplicar control de acceso aunque requires sea False)
+    if _ALU_ID_RE.search(user_message):
+        return "student_data"
+
     return "generator"

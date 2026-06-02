@@ -21,6 +21,9 @@ class UniversityAssistantState(TypedDict):
     user_message:            str
     user_id:                 Optional[str]
     session_id:              str
+    role:                    str             # "guest" | "student" | "admin"
+    authenticated_user_id:   Optional[str]   # ID real del alumno autenticado
+    access_violation_attempted: bool         # True si se detectó intento de acceso indebido
 
     # ── Clasificación del Router ─────────────────────────────────────
     intent:                  Optional[str]
@@ -43,6 +46,7 @@ class UniversityAssistantState(TypedDict):
     # ── Expediente del alumno ────────────────────────────────────────
     student_record:          Optional[dict]  # salida de get_full_student_record()
     subject_attempts:        Optional[List[dict]]  # convocatorias por asignatura
+    student_grades:          Optional[List[dict]]  # histórico de notas
 
     # ── Respuesta final ──────────────────────────────────────────────
     final_response:          Optional[str]
@@ -65,12 +69,17 @@ def get_initial_state(
     session_id: str,
     user_id: Optional[str] = None,
     conversation_history: Optional[List[dict]] = None,
+    role: str = "guest",
+    authenticated_user_id: Optional[str] = None,
 ) -> UniversityAssistantState:
     """Crea un State inicial limpio para una nueva consulta."""
     return UniversityAssistantState(
         user_message=user_message,
         user_id=user_id,
         session_id=session_id,
+        role=role,
+        authenticated_user_id=authenticated_user_id,
+        access_violation_attempted=False,
         intent=None,
         key_points=[],
         requires_student_data=False,
@@ -83,6 +92,7 @@ def get_initial_state(
         search_queries=[],
         student_record=None,
         subject_attempts=None,
+        student_grades=None,
         final_response=None,
         sources=[],
         confidence=0.0,
