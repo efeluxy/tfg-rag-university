@@ -80,6 +80,18 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
     guardrail_triggered = state.get("guardrail_triggered", False)
     existing_response = state.get("final_response")
 
+    logger.info(
+        "Generator: role=%s has_record=%s has_grades=%d "
+        "has_attempts=%d violation=%s sources=%d intent=%s",
+        state.get("role"),
+        bool(state.get("student_record")),
+        len(state.get("student_grades") or []),
+        len(state.get("subject_attempts") or []),
+        state.get("access_violation_attempted"),
+        len(state.get("sources") or []),
+        state.get("intent"),
+    )
+
     # --- TIER 3: crisis grave — respuesta predefinida + alerta ---
     if emotional_tier == 3:
         logger.warning(

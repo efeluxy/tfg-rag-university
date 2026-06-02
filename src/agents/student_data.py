@@ -28,6 +28,7 @@ from src.tools.sqlite_query import (
 logger = logging.getLogger(__name__)
 
 _SUBJECT_CODE_RE = re.compile(r"\b[A-Z]{2,4}\d{3,4}[A-Z]?\d*\b")
+_ALU_ID_PATTERN = re.compile(r"^ALU\d+$", re.IGNORECASE)
 _ATTEMPTS_KEYWORDS = re.compile(
     r"convocatori|intento|veces que he hecho|cuantas veces|me quedan|he gastado",
     re.IGNORECASE,
@@ -35,6 +36,10 @@ _ATTEMPTS_KEYWORDS = re.compile(
 _GRADES_KEYWORDS = re.compile(
     r"nota|calificacion|calificación|puntuacion|puntuación|saque|saco|"
     r"expediente|media|promedio|que tal voy|como voy",
+    re.IGNORECASE,
+)
+_FULL_RECORD_KEYWORDS = re.compile(
+    r"expediente|todo|completo|historial completo",
     re.IGNORECASE,
 )
 _ALU_ID_REGEX = re.compile(r"\bALU\d{3,}\b", re.IGNORECASE)
@@ -102,6 +107,14 @@ def run_student_data(state: UniversityAssistantState) -> Dict[str, Any]:
     # Siempre detectar si el mensaje menciona un ALU explicitamente
     mentioned_uid = _extract_mentioned_student_id(user_message)
 
+    logger.info(
+        "StudentData: role=%s auth_uid=%s selected_uid=%s "
+        "mentioned_uid=%s message='%s'",
+        role, auth_uid,
+        state.get("user_id"), mentioned_uid,
+        user_message[:80],
+    )
+
     # Si el mensaje menciona otro alumno, comprobar permisos SIEMPRE
     # (independientemente de los flags requires_*)
     if mentioned_uid:
@@ -132,6 +145,11 @@ def run_student_data(state: UniversityAssistantState) -> Dict[str, Any]:
 
     # Comprobar permisos para el target
     allowed, reason = _check_access_permission(role, auth_uid, target_uid)
+
+    logger.info(
+        "StudentData: allowed=%s reason=%s target_uid=%s",
+        allowed, reason, target_uid,
+    )
 
     if not allowed:
         logger.warning(
@@ -178,13 +196,18 @@ def run_student_data(state: UniversityAssistantState) -> Dict[str, Any]:
     # Detectar si se requieren convocatorias
     subject_attempts = None
     upper_msg = user_message.upper()
-    codes_found = _SUBJECT_CODE_RE.findall(upper_msg)
+    # Filter out ALU student IDs that the regex falsely matches as subject codes
+    codes_found = [
+        c for c in _SUBJECT_CODE_RE.findall(upper_msg)
+        if not _ALU_ID_PATTERN.match(c)
+    ]
     has_attempts_kw = bool(_ATTEMPTS_KEYWORDS.search(user_message))
+    wants_full_record = bool(_FULL_RECORD_KEYWORDS.search(user_message))
 
     if codes_found:
         code = codes_found[0]
         subject_attempts = get_subject_attempts(target_uid, code)
-    elif has_attempts_kw or requires_detail:
+    elif has_attempts_kw or requires_detail or wants_full_record:
         subject_attempts = get_subject_attempts(target_uid)
 
     # Detectar si se piden notas
@@ -197,6 +220,14 @@ def run_student_data(state: UniversityAssistantState) -> Dict[str, Any]:
             "Student Data: notas cargadas para '%s' — %d filas",
             target_uid, len(student_grades),
         )
+
+    logger.info(
+        "StudentData: returning record=%s attempts=%d grades=%d violation=%s",
+        "yes" if record else "no",
+        len(subject_attempts or []),
+        len(student_grades or []),
+        False,
+    )
 
     return {
         "student_record": record,

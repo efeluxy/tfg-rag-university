@@ -95,12 +95,24 @@ def run_router(state: UniversityAssistantState) -> Dict[str, Any]:
             logger.warning("Intent '%s' no válido, usando GREETING", intent)
             intent = "GREETING"
 
+        requires_student_data = bool(parsed.get("requires_student_data", False))
+        is_enumerative_query = bool(parsed.get("is_enumerative_query", False))
+        requires_subject_detail = bool(parsed.get("requires_subject_detail", False))
+
+        logger.info(
+            "Router decision: intent=%s requires_student_data=%s "
+            "is_enumerative=%s requires_subject_detail=%s "
+            "for message='%s'",
+            intent, requires_student_data, is_enumerative_query,
+            requires_subject_detail, user_message[:80],
+        )
+
         return {
             "intent": intent,
             "key_points": parsed.get("key_points", []),
-            "requires_student_data": bool(parsed.get("requires_student_data", False)),
-            "is_enumerative_query": bool(parsed.get("is_enumerative_query", False)),
-            "requires_subject_detail": bool(parsed.get("requires_subject_detail", False)),
+            "requires_student_data": requires_student_data,
+            "is_enumerative_query": is_enumerative_query,
+            "requires_subject_detail": requires_subject_detail,
             "router_reasoning": parsed.get("reasoning", ""),
         }
 
