@@ -105,6 +105,68 @@ def render_student_header(student: dict | None, role: str) -> None:
     )
 
 
+def render_academic_history(student_id: str) -> None:
+    """Renderiza el historial academico completo en un expander."""
+    from collections import defaultdict
+    from src.tools.sqlite_query import get_full_academic_history
+
+    history = get_full_academic_history(student_id)
+    if not history:
+        st.markdown(
+            '<div class="history-empty">Sin historial academico registrado.</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    total_subjects = len(history)
+    total_passed = sum(1 for r in history if r["passed"])
+    grades_passed = [r["grade"] for r in history if r["passed"] and r["grade"] is not None]
+    avg_passed = round(sum(grades_passed) / len(grades_passed), 2) if grades_passed else 0.0
+
+    st.markdown(
+        f"""
+        <div class="history-summary">
+            <strong>Historial academico</strong><br>
+            <span class="history-meta">
+                {total_passed}/{total_subjects} aprobadas &mdash; media {avg_passed}
+            </span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    with st.expander("Ver historial completo", expanded=False):
+        by_year = defaultdict(list)
+        for row in history:
+            by_year[row["academic_year"]].append(row)
+        years_sorted = sorted(by_year.keys(), reverse=True)
+
+        for year in years_sorted:
+            st.markdown(
+                f'<div class="history-year">{year}</div>',
+                unsafe_allow_html=True,
+            )
+            for row in by_year[year]:
+                status_icon = "OK" if row["passed"] else "NO"
+                status_class = "passed" if row["passed"] else "failed"
+                attempts = row["attempts_count"]
+                attempts_str = f"(conv. {attempts})" if attempts > 1 else ""
+                grade_display = (
+                    f"{row['grade']:.2f}" if row["grade"] is not None else "-"
+                )
+                st.markdown(
+                    f"""
+                    <div class="history-row {status_class}">
+                        <span class="history-code">{row['subject_code']}</span>
+                        <span class="history-name">{row['subject_name']}</span>
+                        <span class="history-grade">{grade_display}</span>
+                        <span class="history-status">[{status_icon}] {attempts_str}</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+
 def _render_expediente_card(student_id: str) -> None:
     """Renderiza el panel del expediente academico para el alumno dado."""
     student = get_student_data(student_id)
@@ -262,10 +324,11 @@ def render_sidebar():
         selected_data = get_student_data(nuevo_id) if nuevo_id else None
         render_student_header(selected_data, "admin")
 
-    # 3. PANEL DE EXPEDIENTE (solo alumno y admin con alumno seleccionado)
+    # 3. PANEL DE EXPEDIENTE E HISTORIAL (solo alumno y admin con alumno seleccionado)
     target_id = st.session_state.get("selected_student")
     if role in ("student", "admin") and target_id:
         _render_expediente_card(target_id)
+        render_academic_history(target_id)
 
     # 4. BOTON LIMPIAR CONVERSACION
     if st.session_state.get("messages"):

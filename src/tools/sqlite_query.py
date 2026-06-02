@@ -331,6 +331,54 @@ def get_subject_attempts(
         return []
 
 
+def get_full_academic_history(student_id: str) -> list:
+    """
+    Devuelve el historial academico completo del alumno, agrupado y
+    ordenado por curso academico y codigo de asignatura.
+
+    Returns:
+        Lista de dicts con:
+          academic_year, subject_code, subject_name, grade,
+          passed (bool), attempt_number, attempts_count.
+    """
+    if not student_id:
+        return []
+    try:
+        with sqlite3.connect(_get_db_path()) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                """
+                SELECT
+                    sg.academic_year,
+                    sg.subject_code,
+                    sg.subject_name,
+                    sg.grade,
+                    sg.passed,
+                    sg.attempt_number,
+                    (
+                        SELECT COUNT(*)
+                        FROM student_grades sg2
+                        WHERE sg2.student_id = sg.student_id
+                          AND sg2.subject_code = sg.subject_code
+                    ) AS attempts_count
+                FROM student_grades sg
+                WHERE sg.student_id = ?
+                  AND sg.id IN (
+                      SELECT MAX(id)
+                      FROM student_grades
+                      WHERE student_id = sg.student_id
+                      GROUP BY subject_code
+                  )
+                ORDER BY sg.academic_year DESC, sg.subject_code ASC
+                """,
+                (student_id,),
+            ).fetchall()
+        return [dict(r) for r in rows]
+    except sqlite3.Error as exc:
+        logger.error("Error en get_full_academic_history(%s): %s", student_id, exc)
+        return []
+
+
 def get_full_student_record(student_id: str) -> dict:
     """Consolida toda la información del alumno en un único dict estructurado.
 

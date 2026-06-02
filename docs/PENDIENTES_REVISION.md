@@ -107,6 +107,27 @@ memoria. Los otros dos son detalles de implementación que no aportan al discurs
 
 ---
 
+## Refinamientos UI v2 (2026-06-02)
+
+Aplicados via TFG_Prompt_UI_Refinements_v2.txt. Notas:
+
+- CSS del tema ampliado para cubrir explicitamente todos los componentes
+  Streamlit con !important. Si una actualizacion futura de Streamlit
+  cambia los selectores data-testid, sera necesario revisar.
+- max-width del area principal: 1840px (escritorio). Cambiable en
+  app/styles/main.css en la regla [data-testid="stMainBlockContainer"].
+- Politica de privacidad: modal automatico al inicio. Persistencia solo
+  en session_state (al reabrir el navegador vuelve a salir). Trabajo
+  futuro: persistencia con cookies o localStorage via componente custom.
+- Historial academico: consulta SQL agrupada por subject_code (toma
+  el ultimo intento). Si en el futuro se quiere mostrar TODOS los
+  intentos por separado, ajustar la query en get_full_academic_history.
+- Selector CSS del logout: usa stElementContainer (Streamlit 1.43+).
+  El selector del prompt v2 (stMarkdown) no funciona en columnas;
+  se mantiene el selector verificado de v1.
+
+---
+
 ## Refinamientos UI (2026-06-02)
 
 Aplicados via TFG_Prompt_UI_Refinements.txt. Notas:

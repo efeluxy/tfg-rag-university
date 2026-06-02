@@ -2,10 +2,103 @@
 Modal de politicas de privacidad y uso responsable.
 
 Usa st.dialog (disponible desde Streamlit 1.35) para mostrar la politica
-en un overlay. Invocar abrir_dialogo_privacidad() para mostrarla.
+en un overlay.
+- abrir_dialogo_privacidad(): abre el modal completo de 9 secciones (manual).
+- show_privacy_dialog_auto(): modal automatico al primer acceso con boton
+  "He leido y acepto" obligatorio.
 """
 
 import streamlit as st
+
+
+@st.dialog("Politica de privacidad y uso responsable", width="large")
+def show_privacy_dialog_auto():
+    """
+    Modal automatico que aparece en el primer acceso.
+    Solo se cierra al pulsar 'He leido y acepto'.
+    """
+    st.markdown(
+        """
+### Antes de empezar, lee este aviso
+
+Este Asistente Universitario Inteligente es un **prototipo academico**
+desarrollado como Trabajo Final de Grado (TFG 2026). No esta destinado
+a uso en produccion y no sustituye a los servicios oficiales de
+orientacion academica o asistencia psicologica de ninguna universidad.
+
+#### 1. Datos sinteticos
+
+Todos los expedientes, calificaciones y registros academicos pertenecen
+a **50 alumnos sinteticos generados algoritmicamente**. No corresponden
+a personas reales. Las credenciales son compartidas y publicas dentro
+del entorno de demostracion.
+
+#### 2. Procesamiento de mensajes
+
+Los mensajes que escribas se envian a Azure OpenAI (GPT-4o) para su
+procesamiento. La conversacion se mantiene en la sesion del navegador
+y se pierde al cerrarla. **No se persiste en base de datos**.
+
+#### 3. Logs locales
+
+Se registran eventos de acceso, intentos de violacion de privacidad y
+alertas criticas del sistema emocional, todos en archivos locales bajo
+`logs/`. No se envian a servidores externos.
+
+#### 4. Sistema emocional
+
+El asistente detecta tres niveles emocionales:
+- **Estres academico:** respuesta empatica con recursos universitarios.
+- **Malestar emocional no critico:** disclaimer y derivacion firme a
+  profesionales humanos.
+- **Crisis grave:** respuesta predefinida con telefonos de emergencia
+  (024, 112). El sistema no se ofrece como interlocutor en crisis.
+
+El sistema esta sesgado al alza: ante duda, escala de nivel. Esto puede
+generar falsos positivos, pero es una decision consciente: preferimos
+falsos positivos a falsos negativos en seguridad emocional.
+
+**Si te encuentras en una situacion de crisis personal, contacta con
+un profesional sanitario o con el 024 (atencion a la conducta suicida).**
+
+#### 5. Aislamiento por rol
+
+- Un alumno autenticado solo puede consultar SU propio expediente.
+- Un administrador puede consultar todos los expedientes.
+- Cualquier intento de saltarse el aislamiento queda registrado.
+
+#### 6. Limitaciones declaradas
+
+Como prototipo academico:
+- Contrasenas en texto plano (no hash).
+- Sin bloqueo por intentos fallidos.
+- Sin expiracion de sesion.
+- Sin HTTPS forzado (Streamlit local).
+- Alertas criticas: solo logs locales, sin email/SMS reales.
+
+#### 7. Contacto
+
+Cualquier consulta sobre este TFG: Felix Garcia, a traves de los
+canales academicos correspondientes.
+
+---
+
+*Documento informativo asociado al TFG 2026. No constituye una politica
+de privacidad de produccion ni un compromiso legal.*
+        """
+    )
+
+    st.markdown("---")
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button(
+            "He leido y acepto",
+            key="btn_accept_privacy_auto",
+            use_container_width=True,
+            type="primary",
+        ):
+            st.session_state["privacy_accepted"] = True
+            st.rerun()
 
 
 @st.dialog("Politica de privacidad y uso responsable", width="large")

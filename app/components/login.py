@@ -9,7 +9,6 @@ from app.auth import (
     authenticate_student,
     log_access,
 )
-from app.components.privacy_dialog import abrir_dialogo_privacidad
 
 
 def _start_session(role: str, user_id: str | None) -> None:
@@ -33,10 +32,10 @@ def render_login() -> None:
         """
         <div style="text-align:center; padding: 30px 0 15px 0;">
           <h1 style="color:#1F4E8A; margin:0;">Universidad Demo</h1>
-          <p style="color:#666; font-size:1rem; margin:8px 0 0 0;">
+          <p style="font-size:1rem; margin:8px 0 0 0;">
             Asistente de Orientacion Universitaria
           </p>
-          <p style="color:#888; font-size:0.85rem; margin:4px 0 0 0;">
+          <p style="font-size:0.85rem; margin:4px 0 0 0;">
             Identifica tu modo de acceso para continuar
           </p>
         </div>
@@ -56,16 +55,49 @@ def render_login() -> None:
             "**Acceso para estudiantes matriculados.** "
             "Selecciona tu identidad e introduce la contrasena."
         )
-        students = st.session_state.get("students_list", [])
-        if not students:
+        all_students = st.session_state.get("students_list", [])
+        if not all_students:
             st.warning("No hay alumnos cargados en el sistema.")
         else:
-            opciones = [f"{s['id']} -- {s['name']}" for s in students]
-            seleccion = st.selectbox(
-                "Selecciona tu identidad",
-                opciones,
-                key="login_student_select",
+            # Radio de ordenacion
+            if "login_student_sort" not in st.session_state:
+                st.session_state["login_student_sort"] = "Numero"
+
+            sort_choice = st.radio(
+                label="Ordenar alumnos por",
+                options=["Numero", "Alfabetico"],
+                index=0 if st.session_state["login_student_sort"] == "Numero" else 1,
+                horizontal=True,
+                key="radio_login_student_sort",
             )
+            st.session_state["login_student_sort"] = sort_choice
+
+            if sort_choice == "Numero":
+                sorted_students = sorted(all_students, key=lambda s: s["id"])
+                labels = [f"{s['id']} -- {s['name']}" for s in sorted_students]
+            else:
+                sorted_students = sorted(all_students, key=lambda s: s["name"].lower())
+                labels = [f"{s['name']} ({s['id']})" for s in sorted_students]
+
+            # Mantener seleccion previa entre cambios de orden
+            prev_id = st.session_state.get("login_selected_student_id")
+            default_idx = 0
+            if prev_id:
+                for i, s in enumerate(sorted_students):
+                    if s["id"] == prev_id:
+                        default_idx = i
+                        break
+
+            selected_label = st.selectbox(
+                "Selecciona tu identidad",
+                options=labels,
+                index=default_idx,
+                key="login_selectbox_student",
+            )
+            selected_idx = labels.index(selected_label)
+            st.session_state["login_selected_student_id"] = sorted_students[selected_idx]["id"]
+            uid = sorted_students[selected_idx]["id"]
+
             password = st.text_input(
                 "Contrasena",
                 type="password",
@@ -74,12 +106,11 @@ def render_login() -> None:
             if st.button(
                 "Acceder", key="btn_login_student", use_container_width=True
             ):
-                uid = seleccion.split(" -- ")[0]
                 if authenticate_student(uid, password):
                     _start_session("student", uid)
                     st.rerun()
                 else:
-                    log_access("student", seleccion.split(" -- ")[0], False, None)
+                    log_access("student", uid, False, None)
                     st.error("Contrasena incorrecta. Intentalo de nuevo.")
 
     # TAB 2: INVITADO
@@ -124,7 +155,7 @@ def render_login() -> None:
     st.markdown("---")
     st.markdown(
         """
-        <div style="font-size:0.75rem; color:#888; text-align:center;
+        <div style="font-size:0.75rem; text-align:center;
                     line-height:1.6; padding-top:10px;">
           Sistema de demostracion academica (TFG 2026).
           Las credenciales se almacenan localmente y los datos de
@@ -133,13 +164,3 @@ def render_login() -> None:
         """,
         unsafe_allow_html=True,
     )
-    # Enlace que abre el modal de politica de privacidad
-    st.markdown(
-        '<span id="privacy-link-anchor" style="display:none"></span>',
-        unsafe_allow_html=True,
-    )
-    if st.button(
-        "Consultar politica de privacidad",
-        key="btn_open_privacy",
-    ):
-        abrir_dialogo_privacidad()

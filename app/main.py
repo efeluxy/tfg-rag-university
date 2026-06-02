@@ -16,6 +16,7 @@ from app.components.sidebar import render_sidebar
 from app.components.chat import render_chat, process_message
 from app.components.login import render_login
 from app.utils.theme import init_theme, inject_theme_css, render_theme_toggle
+from app.components.privacy_dialog import show_privacy_dialog_auto
 
 # ── Configuración de página (primera llamada Streamlit) ──────────────
 st.set_page_config(
@@ -44,6 +45,11 @@ load_css(str(_css_path))
 
 # ── Toggle de tema siempre visible (login y app) ─────────────────────
 render_theme_toggle()
+
+# ── Gate de politica de privacidad (primer acceso) ───────────────────
+if not st.session_state.get("privacy_accepted", False):
+    show_privacy_dialog_auto()
+    st.stop()
 
 
 # ── Carga cacheada de la lista de alumnos ────────────────────────────

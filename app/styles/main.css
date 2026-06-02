@@ -5,10 +5,9 @@ header {visibility: hidden;}
 
 /* ── Variables de color legacy (compatibilidad con estilos existentes) ── */
 :root {
-  --azul-principal: #1F4E8A;
-  --azul-medio: #2E75B6;
-  --azul-claro: #D6E4F0;
-  --verde-asistente: #E8F5E9;
+  --azul-principal: var(--accent, #1F4E8A);
+  --azul-medio: var(--accent-hover, #2E75B6);
+  --verde-asistente: var(--bg-secondary, #E8F5E9);
   --gris-borde: var(--border, #E0E0E0);
   --gris-fondo: var(--bg-secondary, #F8F9FA);
   --texto-principal: var(--text-primary, #1A1A2E);
@@ -22,46 +21,45 @@ html, body, [class*="css"] {
   font-family: 'Lato', sans-serif;
 }
 
-/* ── Burbuja del usuario ── */
+/* ── Burbujas de chat personalizadas (compatibilidad con chat.py) ── */
 .burbuja-usuario {
-  background: var(--azul-principal);
-  color: white;
+  background: var(--accent);
+  color: #ffffff;
   padding: 12px 18px;
   border-radius: 18px 18px 4px 18px;
   margin: 8px 0 8px 60px;
   font-size: 0.95rem;
   line-height: 1.5;
-  box-shadow: 0 2px 6px rgba(31,78,138,0.2);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-/* ── Burbuja del asistente ── */
 .burbuja-asistente {
-  background: var(--verde-asistente);
-  color: var(--texto-principal);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   padding: 14px 18px;
   border-radius: 18px 18px 18px 4px;
   margin: 8px 60px 8px 0;
   font-size: 0.95rem;
   line-height: 1.6;
-  border-left: 3px solid var(--azul-medio);
+  border-left: 3px solid var(--accent);
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
-/* ── Sección de fuentes citadas ── */
+/* ── Seccion de fuentes citadas ── */
 .fuentes-box {
-  background: var(--gris-fondo);
-  border: 1px solid var(--gris-borde);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 14px;
   margin-top: 8px;
   font-size: 0.82rem;
-  color: var(--texto-secundario);
+  color: var(--text-secondary);
 }
 
 /* ── Badge de estado del alumno ── */
-.badge-excellent { background:#C8E6C9; color:#1B5E20; padding:2px 8px; border-radius:10px; font-size:0.8rem; font-weight:700; }
-.badge-active    { background:#BBDEFB; color:#0D47A1; padding:2px 8px; border-radius:10px; font-size:0.8rem; font-weight:700; }
-.badge-at-risk   { background:#FFCCBC; color:#BF360C; padding:2px 8px; border-radius:10px; font-size:0.8rem; font-weight:700; }
+.badge-excellent { background: var(--success); color: #ffffff; padding:2px 8px; border-radius:10px; font-size:0.8rem; font-weight:700; }
+.badge-active    { background: var(--accent);  color: #ffffff; padding:2px 8px; border-radius:10px; font-size:0.8rem; font-weight:700; }
+.badge-at-risk   { background: var(--danger);  color: #ffffff; padding:2px 8px; border-radius:10px; font-size:0.8rem; font-weight:700; }
 
 /* ── Indicador de escritura (typing) ── */
 .typing-indicator {
@@ -69,14 +67,14 @@ html, body, [class*="css"] {
   align-items: center;
   gap: 4px;
   padding: 12px 18px;
-  background: var(--verde-asistente);
+  background: var(--bg-secondary);
   border-radius: 18px 18px 18px 4px;
   width: fit-content;
   margin: 8px 0;
 }
 .typing-dot {
   width: 8px; height: 8px;
-  background: var(--azul-medio);
+  background: var(--accent);
   border-radius: 50%;
   animation: typing-bounce 1.2s infinite;
 }
@@ -89,8 +87,8 @@ html, body, [class*="css"] {
 
 /* ── Panel de expediente en sidebar ── */
 .expediente-card {
-  background: var(--bg-secondary, #f4f6fa);
-  border: 1px solid var(--border, #E0E0E0);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 14px;
   margin-top: 4px;
@@ -100,55 +98,52 @@ html, body, [class*="css"] {
   justify-content: space-between;
   font-size: 0.85rem;
   padding: 4px 0;
-  border-bottom: 1px solid var(--border, #E0E0E0);
+  border-bottom: 1px solid var(--border);
 }
 
-/* PENDIENTE: sustituir colores hardcodeados restantes por variables tematicas
-   en una iteracion futura cuando se complete el sistema de temas. */
 
+/* === LAYOUT PRINCIPAL: ANCHO 1840px Y RESPONSIVE === */
 
-/* === LAYOUT PRINCIPAL: ANCHO CONTROLADO Y RESPONSIVE === */
-
-/* Limitar el ancho del area de contenido en escritorio. */
-[data-testid="stMainBlockContainer"] {
-    max-width: 920px !important;
+[data-testid="stMainBlockContainer"],
+.main .block-container,
+[data-testid="stAppViewContainer"] .main .block-container {
+    max-width: 1840px !important;
     padding-top: 2rem !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
     margin-left: auto !important;
     margin-right: auto !important;
 }
 
-/* Inputs y chat input adaptados al ancho del contenedor. */
 .stChatInput,
 .stTextInput,
 .stSelectbox {
     max-width: 100%;
 }
 
-/* Mensajes del chat: ancho coherente con el contenedor. */
 [data-testid="stChatMessage"] {
     max-width: 100%;
 }
 
-/* Hr y separadores: alineados al contenedor. */
 hr {
     max-width: 100%;
     margin: 1rem auto;
 }
 
-/* Responsive: tablet (max 1024px) */
-@media (max-width: 1024px) {
-    [data-testid="stMainBlockContainer"] {
+/* Responsive: tablet (max 1280px) */
+@media (max-width: 1280px) {
+    [data-testid="stMainBlockContainer"],
+    .main .block-container {
         max-width: 100% !important;
-        padding-left: 1.25rem !important;
-        padding-right: 1.25rem !important;
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
     }
 }
 
 /* Responsive: movil (max 640px) */
 @media (max-width: 640px) {
-    [data-testid="stMainBlockContainer"] {
+    [data-testid="stMainBlockContainer"],
+    .main .block-container {
         padding-left: 0.75rem !important;
         padding-right: 0.75rem !important;
         padding-top: 1rem !important;
@@ -160,12 +155,15 @@ hr {
     .stChatInput textarea {
         font-size: 0.95rem;
     }
+    div[data-testid="stMarkdown"]:has(> #theme-toggle-anchor) + div[data-testid="stButton"] > button {
+        padding: 0.3rem 0.7rem !important;
+        font-size: 0.8rem !important;
+    }
 }
 
 
 /* === SIDEBAR STICKY === */
 
-/* La sidebar nativa ocupa toda la altura y no scrollea con el contenido. */
 section[data-testid="stSidebar"] {
     position: sticky !important;
     top: 0 !important;
@@ -180,7 +178,6 @@ section[data-testid="stSidebar"] > div:first-child {
     padding-bottom: 1rem;
 }
 
-/* La columna izquierda del layout en columnas tambien sticky. */
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child {
     position: sticky;
     top: 0;
@@ -189,87 +186,141 @@ section[data-testid="stSidebar"] > div:first-child {
     align-self: flex-start;
 }
 
-/* Scrollbar discreta en sidebar. */
 section[data-testid="stSidebar"] > div::-webkit-scrollbar,
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child::-webkit-scrollbar {
     width: 6px;
 }
 section[data-testid="stSidebar"] > div::-webkit-scrollbar-thumb,
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child::-webkit-scrollbar-thumb {
-    background: var(--border, #3a3d44);
+    background: var(--border);
     border-radius: 3px;
 }
 section[data-testid="stSidebar"] > div::-webkit-scrollbar-thumb:hover,
 [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted, #8a8d94);
+    background: var(--text-muted);
 }
 
 
 /* === HEADER DEL ALUMNO EN SIDEBAR === */
 .student-header {
     padding: 0.75rem 0.25rem 1rem 0.25rem;
-    border-bottom: 1px solid var(--border, #E0E0E0);
+    border-bottom: 1px solid var(--border);
     margin-bottom: 1rem;
 }
 .student-header-name {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-primary, #1a1d24);
+    color: var(--text-primary);
     line-height: 1.3;
 }
 .student-header-sub {
     font-size: 0.9rem;
-    color: var(--text-secondary, #3a3d44);
+    color: var(--text-secondary);
     margin-top: 0.15rem;
     font-weight: 500;
 }
 .student-header-meta {
     font-size: 0.8rem;
-    color: var(--text-muted, #6b6e75);
+    color: var(--text-muted);
     margin-top: 0.35rem;
     font-weight: 400;
 }
 .student-header-empty {
     padding: 0.75rem 0.25rem;
-    color: var(--text-muted, #6b6e75);
+    color: var(--text-muted);
     font-style: italic;
     font-size: 0.9rem;
 }
 
 
-/* === BOTON CERRAR SESION === */
-/* Streamlit 1.43+: stElementContainer envuelve cada widget */
+/* === BOTON CERRAR SESION (estilo invertido) === */
+
+/* Estado normal: borde y texto rojos, fondo transparente */
 [data-testid="stElementContainer"]:has(#logout-anchor) + [data-testid="stElementContainer"] > [data-testid="stButton"] > button {
-    background-color: var(--danger, #dc2626) !important;
-    color: #ffffff !important;
-    border: 1px solid var(--danger, #dc2626) !important;
+    background-color: transparent !important;
+    color: var(--danger) !important;
+    border: 1.5px solid var(--danger) !important;
     font-weight: 600 !important;
     cursor: pointer !important;
-    transition: background-color 0.15s ease, border-color 0.15s ease !important;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
 }
+
+/* Estado hover: relleno rojo, texto blanco */
 [data-testid="stElementContainer"]:has(#logout-anchor) + [data-testid="stElementContainer"] > [data-testid="stButton"] > button:hover {
-    background-color: var(--danger-hover, #991b1b) !important;
-    border-color: var(--danger-hover, #991b1b) !important;
+    background-color: var(--danger) !important;
+    color: #ffffff !important;
+    border-color: var(--danger) !important;
 }
+
+/* Active */
 [data-testid="stElementContainer"]:has(#logout-anchor) + [data-testid="stElementContainer"] > [data-testid="stButton"] > button:active {
+    background-color: var(--danger-hover) !important;
+    border-color: var(--danger-hover) !important;
+    color: #ffffff !important;
     transform: translateY(1px);
 }
 
 
-/* === BOTON-ENLACE DE POLITICA DE PRIVACIDAD === */
-div[data-testid="stMarkdown"]:has(> #privacy-link-anchor) + div[data-testid="stButton"] > button {
-    background-color: transparent !important;
-    color: var(--accent, #2563eb) !important;
-    border: none !important;
-    padding: 0.25rem 0 !important;
-    font-size: 0.85rem !important;
-    text-decoration: underline !important;
-    text-underline-offset: 3px !important;
-    cursor: pointer !important;
-    box-shadow: none !important;
-    font-weight: 400 !important;
+/* === HISTORIAL ACADEMICO EN SIDEBAR === */
+.history-summary {
+    padding: 0.75rem 0.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
 }
-div[data-testid="stMarkdown"]:has(> #privacy-link-anchor) + div[data-testid="stButton"] > button:hover {
-    color: var(--accent-hover, #1d4ed8) !important;
-    background-color: transparent !important;
+.history-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted) !important;
+}
+.history-year {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent) !important;
+    margin: 0.6rem 0 0.3rem 0;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 0.2rem;
+}
+.history-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 50px 60px;
+    gap: 0.3rem;
+    align-items: center;
+    padding: 0.25rem 0;
+    font-size: 0.78rem;
+    border-bottom: 1px solid var(--border);
+}
+.history-row:last-child {
+    border-bottom: none;
+}
+.history-code {
+    font-family: monospace;
+    color: var(--text-secondary) !important;
+    font-size: 0.72rem;
+}
+.history-name {
+    color: var(--text-primary) !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.history-grade {
+    font-weight: 600;
+    text-align: right;
+}
+.history-row.passed .history-grade {
+    color: var(--success) !important;
+}
+.history-row.failed .history-grade {
+    color: var(--danger) !important;
+}
+.history-status {
+    font-size: 0.7rem;
+    color: var(--text-muted) !important;
+    text-align: right;
+}
+.history-empty {
+    color: var(--text-muted) !important;
+    font-style: italic;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.25rem;
 }
