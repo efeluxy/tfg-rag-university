@@ -20,7 +20,9 @@ from src.prompts.generator_prompt import (
     build_emotional_tier_section,
     format_retrieved_docs,
     format_student_context,
+    format_subject_attempts,
 )
+from src.utils.conversation import format_history_for_llm
 
 logger = logging.getLogger(__name__)
 
@@ -134,18 +136,26 @@ def run_generator(state: UniversityAssistantState) -> Dict[str, Any]:
     # --- Flujo normal (tier 0, 1, 2): llamar al LLM ---
     retrieved_docs = state.get("retrieved_docs", [])
     student_record = state.get("student_record")
+    subject_attempts = state.get("subject_attempts")
 
     student_status = ""
     if student_record:
         profile = student_record.get("profile", {})
         student_status = profile.get("status", "")
 
+    # Construir secciones del prompt
+    conv_history = state.get("conversation_history") or []
+    history_section = format_history_for_llm(conv_history)
+
     student_context = format_student_context(student_record)
+    subject_attempts_formatted = format_subject_attempts(subject_attempts)
     retrieved_docs_formatted = format_retrieved_docs(retrieved_docs)
     emotional_tier_section = build_emotional_tier_section(emotional_tier, student_status)
 
     system_prompt = GENERATOR_SYSTEM_PROMPT.format(
+        history_section=history_section,
         student_context=student_context,
+        subject_attempts_formatted=subject_attempts_formatted,
         retrieved_docs_formatted=retrieved_docs_formatted,
         emotional_tier_section=emotional_tier_section,
     )

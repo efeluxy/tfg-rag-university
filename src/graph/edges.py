@@ -46,15 +46,16 @@ def route_after_guardrail(state: UniversityAssistantState) -> str:
 def route_after_retriever(state: UniversityAssistantState) -> str:
     """Decide si después del Retriever se consulta el expediente del alumno.
 
-    - Si requires_student_data=True Y user_id no es None ni vacío:
-      ir a "student_data".
+    - Si requires_student_data=True o requires_subject_detail=True,
+      Y user_id no es None ni vacío: ir a "student_data".
     - En cualquier otro caso: ir directamente a "generator".
 
     Returns:
         "student_data" | "generator"
     """
     requires = state.get("requires_student_data", False)
+    requires_detail = state.get("requires_subject_detail", False)
     user_id = state.get("user_id")
-    if requires and user_id and str(user_id).strip():
+    if (requires or requires_detail) and user_id and str(user_id).strip():
         return "student_data"
     return "generator"

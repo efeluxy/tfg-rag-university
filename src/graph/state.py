@@ -26,6 +26,8 @@ class UniversityAssistantState(TypedDict):
     intent:                  Optional[str]
     key_points:              List[str]
     requires_student_data:   bool
+    is_enumerative_query:    bool
+    requires_subject_detail: bool
     router_reasoning:        Optional[str]
 
     # ── Resultado del Guardrail ──────────────────────────────────────
@@ -40,6 +42,7 @@ class UniversityAssistantState(TypedDict):
 
     # ── Expediente del alumno ────────────────────────────────────────
     student_record:          Optional[dict]  # salida de get_full_student_record()
+    subject_attempts:        Optional[List[dict]]  # convocatorias por asignatura
 
     # ── Respuesta final ──────────────────────────────────────────────
     final_response:          Optional[str]
@@ -48,6 +51,7 @@ class UniversityAssistantState(TypedDict):
 
     # ── Historial de conversación ────────────────────────────────────
     message_history:         Annotated[List[dict], operator.add]
+    conversation_history:    Optional[List[dict]]  # últimos 6 turnos pasados por Streamlit
 
     # Tiers emocionales y alertas
     emotional_tier:          int             # 0=ninguno, 1, 2, 3
@@ -60,6 +64,7 @@ def get_initial_state(
     user_message: str,
     session_id: str,
     user_id: Optional[str] = None,
+    conversation_history: Optional[List[dict]] = None,
 ) -> UniversityAssistantState:
     """Crea un State inicial limpio para una nueva consulta."""
     return UniversityAssistantState(
@@ -69,16 +74,20 @@ def get_initial_state(
         intent=None,
         key_points=[],
         requires_student_data=False,
+        is_enumerative_query=False,
+        requires_subject_detail=False,
         router_reasoning=None,
         guardrail_triggered=False,
         guardrail_reason=None,
         retrieved_docs=[],
         search_queries=[],
         student_record=None,
+        subject_attempts=None,
         final_response=None,
         sources=[],
         confidence=0.0,
         message_history=[],
+        conversation_history=conversation_history or [],
         emotional_tier=0,
         emotional_tier_label=None,
         alert_generated=False,

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 MAX_RETRIEVED_DOCS: int = int(os.getenv("MAX_RETRIEVED_DOCS", "5"))
+TOP_K_DEFAULT: int = int(os.getenv("TOP_K_DEFAULT", "5"))
 RETRIEVAL_SCORE_THRESHOLD: float = float(os.getenv("RETRIEVAL_SCORE_THRESHOLD", "0.7"))
 CHUNK_SIZE: int = 512
 CHUNK_OVERLAP: int = 50

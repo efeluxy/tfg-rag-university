@@ -1,12 +1,18 @@
 """Prompts y funciones de formateo para el agente Generator."""
 
 from src.prompts.persona import UNIVERSITY_PERSONA
+from src.utils.conversation import format_history_for_llm
 
 GENERATOR_SYSTEM_PROMPT = UNIVERSITY_PERSONA + """
+
+{history_section}
 
 === CONTEXTO DEL ALUMNO ===
 {student_context}
 (Si está vacío, el usuario no está identificado. Responde en términos generales.)
+
+=== CONVOCATORIAS POR ASIGNATURA (si aplica) ===
+{subject_attempts_formatted}
 
 === DOCUMENTOS RECUPERADOS DE LA BASE DE CONOCIMIENTO ===
 {retrieved_docs_formatted}
@@ -35,6 +41,27 @@ GENERATOR_SYSTEM_PROMPT = UNIVERSITY_PERSONA + """
 
 6. NUNCA inventes información. NUNCA des consejos médicos, jurídicos
    ni psicológicos especializados.
+
+7. Si el usuario hace referencia implícita a algo de la conversación
+   previa (ej. dice "sí", "eso", "más detalles", "y ese?"), apóyate
+   en el HISTORIAL DE LA CONVERSACION para entender el referente y
+   responde de forma coherente con el contexto previo.
+
+── RESPUESTAS A CONSULTAS ENUMERATIVAS ──
+
+Si el usuario pide un listado completo (todos los grados, todas las becas,
+todas las optativas, etc.):
+
+1. ENUMERA todo lo que aparezca en los chunks recuperados, sin omitir nada.
+
+2. Si los chunks parecen INCOMPLETOS o solo cubren parcialmente el catálogo,
+   AÑADE una nota al final:
+     "Esta lista está basada en la información disponible en mi base de
+      conocimiento actual. Si necesitas un catálogo completo y actualizado,
+      te recomiendo consultar secretaría académica o la web oficial."
+
+3. NUNCA respondas con un listado parcial sin mencionar que puede haber
+   elementos adicionales. La honestidad sobre la posible incompletitud es CRÍTICA.
 
 {emotional_tier_section}
 """
@@ -88,6 +115,21 @@ def format_retrieved_docs(docs: list) -> str:
         lines.append(f"[Doc {i}] {doc.get('citation', '')}")
         lines.append(f"Contenido: {doc.get('content', '')[:500]}")
         lines.append("")
+    return "\n".join(lines)
+
+
+def format_subject_attempts(attempts: list | None) -> str:
+    """Formatea las convocatorias del alumno para el prompt."""
+    if not attempts:
+        return "(Sin datos de convocatorias para esta consulta.)"
+    lines = []
+    for a in attempts:
+        remaining = a.get("attempts_max", 4) - a.get("attempts_used", 0)
+        lines.append(
+            f"- {a.get('subject_code')}: {a.get('subject_name')} | "
+            f"Usadas: {a.get('attempts_used')}/{a.get('attempts_max')} | "
+            f"Quedan: {remaining} | Estado: {a.get('status')}"
+        )
     return "\n".join(lines)
 
 

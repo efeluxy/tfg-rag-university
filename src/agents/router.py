@@ -22,6 +22,8 @@ _FALLBACK = {
     "intent": "GREETING",
     "key_points": [],
     "requires_student_data": False,
+    "is_enumerative_query": False,
+    "requires_subject_detail": False,
     "router_reasoning": "Fallback por error de parseo",
 }
 
@@ -47,10 +49,15 @@ def run_router(state: UniversityAssistantState) -> Dict[str, Any]:
         state: Estado actual del grafo.
 
     Returns:
-        Dict con intent, key_points, requires_student_data, router_reasoning.
+        Dict con intent, key_points, requires_student_data,
+        is_enumerative_query, requires_subject_detail, router_reasoning.
     """
     user_message = state["user_message"]
-    history_context = _build_history_context(state.get("message_history", []))
+    # Usar conversation_history si existe, sino caer en message_history
+    conv_history = state.get("conversation_history") or []
+    msg_history = state.get("message_history", [])
+    combined = conv_history + msg_history
+    history_context = _build_history_context(combined)
 
     user_content = ROUTER_USER_TEMPLATE.format(
         history_context=history_context,
@@ -92,6 +99,8 @@ def run_router(state: UniversityAssistantState) -> Dict[str, Any]:
             "intent": intent,
             "key_points": parsed.get("key_points", []),
             "requires_student_data": bool(parsed.get("requires_student_data", False)),
+            "is_enumerative_query": bool(parsed.get("is_enumerative_query", False)),
+            "requires_subject_detail": bool(parsed.get("requires_subject_detail", False)),
             "router_reasoning": parsed.get("reasoning", ""),
         }
 

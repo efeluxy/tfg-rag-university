@@ -8,6 +8,7 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from src.graph.state import get_initial_state
+from src.utils.conversation import get_recent_history
 from app.components.sources_panel import format_sources_html
 
 logger = logging.getLogger(__name__)
@@ -16,10 +17,15 @@ logger = logging.getLogger(__name__)
 def process_message(user_input: str) -> None:
     """Invoca el grafo LangGraph y añade la respuesta al historial."""
     try:
+        # Tomar los mensajes previos al actual para contexto conversacional
+        all_messages = st.session_state.get("messages", [])
+        history = get_recent_history(all_messages, max_turns=6)
+
         state = get_initial_state(
             user_message=user_input,
             session_id=st.session_state.session_id,
             user_id=st.session_state.selected_student,
+            conversation_history=history,
         )
         config = {
             "configurable": {

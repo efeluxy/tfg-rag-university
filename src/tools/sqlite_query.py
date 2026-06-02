@@ -250,6 +250,45 @@ def get_academic_standing(student_id: str) -> dict:
         return {"error": f"Error de base de datos: {exc}"}
 
 
+def get_subject_attempts(
+    student_id: str,
+    subject_code: Optional[str] = None,
+) -> list[dict]:
+    """Consulta convocatorias de un alumno.
+
+    Args:
+        student_id: Identificador del alumno.
+        subject_code: Codigo de asignatura (ej. 'INF201'). Si es None,
+            devuelve todas las convocatorias del alumno.
+
+    Returns:
+        Lista de dicts con subject_code, subject_name, attempts_used,
+        attempts_max, last_attempt_year, status.
+    """
+    if not student_id:
+        return []
+    query = (
+        "SELECT subject_code, subject_name, attempts_used, "
+        "attempts_max, last_attempt_year, status "
+        "FROM student_subject_attempts "
+        "WHERE student_id = ?"
+    )
+    params: list = [student_id]
+    if subject_code:
+        query += " AND subject_code = ?"
+        params.append(subject_code.upper())
+    query += " ORDER BY subject_code"
+
+    try:
+        with sqlite3.connect(_get_db_path()) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(query, params).fetchall()
+        return [dict(r) for r in rows]
+    except sqlite3.Error as exc:
+        logger.error("Error consultando attempts: %s", exc)
+        return []
+
+
 def get_full_student_record(student_id: str) -> dict:
     """Consolida toda la información del alumno en un único dict estructurado.
 
