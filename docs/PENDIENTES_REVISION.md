@@ -104,3 +104,22 @@ usan `date.today()` para generar el LOG_PATH dinámicamente.
 
 De los tres puntos, el **#1 es el que merece dos párrafos en la sección de limitaciones** de la
 memoria. Los otros dos son detalles de implementación que no aportan al discurso académico.
+
+---
+
+## Refinamientos UI (2026-06-02)
+
+Aplicados via TFG_Prompt_UI_Refinements.txt. Notas:
+
+- El sticky de la sidebar depende del flexbox que Streamlit aplica al
+  contenedor padre. Si una version futura de Streamlit cambia esa
+  estructura, revisar los selectores `section[data-testid="stSidebar"]`
+  y `[data-testid="stColumn"]:first-child` (la app usa columnas, no sidebar nativa).
+- El selector :has() requiere navegadores modernos (Chrome 105+, Firefox
+  121+, Safari 15.4+). Verificado en local. Trabajo futuro: fallback con
+  JavaScript para navegadores antiguos.
+- El toggle de tema NO persiste entre sesiones del navegador (no se usa
+  localStorage). Trabajo futuro: persistencia con st.experimental_user
+  o cookies firmadas.
+- La politica de privacidad en privacy_dialog.py es texto estatico. En
+  produccion deberia centralizarse en un documento legal versionado.

@@ -9,6 +9,7 @@ from app.auth import (
     authenticate_student,
     log_access,
 )
+from app.components.privacy_dialog import abrir_dialogo_privacidad
 
 
 def _start_session(role: str, user_id: str | None) -> None:
@@ -132,3 +133,13 @@ def render_login() -> None:
         """,
         unsafe_allow_html=True,
     )
+    # Enlace que abre el modal de politica de privacidad
+    st.markdown(
+        '<span id="privacy-link-anchor" style="display:none"></span>',
+        unsafe_allow_html=True,
+    )
+    if st.button(
+        "Consultar politica de privacidad",
+        key="btn_open_privacy",
+    ):
+        abrir_dialogo_privacidad()

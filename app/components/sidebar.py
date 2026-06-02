@@ -47,6 +47,64 @@ def get_student_data(student_id: str) -> dict | None:
         return None
 
 
+def load_all_students() -> list:
+    """Devuelve la lista completa de alumnos desde session_state."""
+    return st.session_state.get("students_list", [])
+
+
+def render_student_header(student: dict | None, role: str) -> None:
+    """Renderiza el bloque de cabecera del alumno en la sidebar."""
+    if role == "guest":
+        st.markdown(
+            """
+            <div class="student-header">
+                <div class="student-header-name">Modo invitado</div>
+                <div class="student-header-sub">Acceso sin datos personales</div>
+                <div class="student-header-meta">Solo consultas generales</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        return
+
+    if not student:
+        st.markdown(
+            '<div class="student-header-empty">Sin alumno seleccionado</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    name = student.get("name", "Sin nombre")
+    sid = student.get("id", "")
+    degree = student.get("degree", "")
+    year = student.get("year", "")
+    gpa = student.get("gpa", "")
+    status = student.get("status", "")
+
+    status_label = {
+        "excellent": "Excelente",
+        "active": "Activo",
+        "at_risk": "En riesgo",
+    }.get(status, status.capitalize() if status else "")
+
+    year_label = f"{year} curso" if year else ""
+    gpa_label = f"GPA {gpa}" if gpa not in (None, "") else ""
+
+    line3_parts = [p for p in (year_label, gpa_label, status_label) if p]
+    line3 = " - ".join(line3_parts)
+
+    st.markdown(
+        f"""
+        <div class="student-header">
+            <div class="student-header-name">{name}</div>
+            <div class="student-header-sub">{sid} - {degree}</div>
+            <div class="student-header-meta">{line3}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def _render_expediente_card(student_id: str) -> None:
     """Renderiza el panel del expediente academico para el alumno dado."""
     student = get_student_data(student_id)
@@ -84,7 +142,6 @@ def _render_expediente_card(student_id: str) -> None:
     st.markdown(
         f"""
         <div class="expediente-card">
-          <h4>{student.get('name', '')}</h4>
           <div class="expediente-stat">
             <span>Grado</span>
             <span style="font-size:0.78rem; text-align:right;">{degree_short}</span>
@@ -132,35 +189,48 @@ def render_sidebar():
     )
     st.markdown("---")
 
-    # 2. INFORMACION / SELECTOR SEGUN ROL
+    # 2. HEADER DEL ALUMNO (adaptado al rol)
     if role == "guest":
-        st.markdown(
-            '<div style="text-align:center; padding:10px;">'
-            '<span style="color:#666;">Modo invitado</span><br>'
-            '<span style="color:#888; font-size:0.8rem;">'
-            "Sin acceso a expedientes</span>"
-            "</div>",
-            unsafe_allow_html=True,
-        )
+        render_student_header(None, "guest")
 
     elif role == "student":
-        # Alumno: expediente fijo, sin selector
         auth_id = st.session_state.get("authenticated_user_id")
         if st.session_state.get("selected_student") != auth_id:
             st.session_state.selected_student = auth_id
+        student_data = get_student_data(auth_id) if auth_id else None
+        render_student_header(student_data, "student")
 
     elif role == "admin":
-        # Admin: selector completo de todos los alumnos
-        students = st.session_state.get("students_list", [])
-        opciones = ["Sin identificar"] + [
-            f"{s['id']} -- {s['name']}" for s in students
-        ]
+        # Inicializar criterio de ordenacion
+        if "student_sort" not in st.session_state:
+            st.session_state["student_sort"] = "Numero"
 
-        current_id = st.session_state.get("selected_student")
+        sort_choice = st.radio(
+            label="Ordenar por",
+            options=["Numero", "Alfabetico"],
+            index=0 if st.session_state["student_sort"] == "Numero" else 1,
+            horizontal=True,
+            key="radio_student_sort",
+        )
+        st.session_state["student_sort"] = sort_choice
+
+        all_students = load_all_students()
+
+        if sort_choice == "Numero":
+            sorted_students = sorted(all_students, key=lambda s: s["id"])
+            labels_students = [f"{s['id']} - {s['name']}" for s in sorted_students]
+        else:
+            sorted_students = sorted(all_students, key=lambda s: s["name"].lower())
+            labels_students = [f"{s['name']} ({s['id']})" for s in sorted_students]
+
+        opciones = ["Sin identificar"] + labels_students
+
+        # Mantener seleccion previa si existe
+        prev_id = st.session_state.get("selected_student")
         current_index = 0
-        if current_id:
-            for i, s in enumerate(students, start=1):
-                if s["id"] == current_id:
+        if prev_id:
+            for i, s in enumerate(sorted_students, start=1):
+                if s["id"] == prev_id:
                     current_index = i
                     break
 
@@ -168,18 +238,29 @@ def render_sidebar():
             "Consultar como alumno",
             opciones,
             index=current_index,
+            key="selectbox_student",
             help="Selecciona un alumno para ver su expediente y personalizar respuestas",
         )
 
-        nuevo_id = (
-            None if seleccion == "Sin identificar" else seleccion.split(" -- ")[0]
-        )
+        if seleccion == "Sin identificar":
+            nuevo_id = None
+        else:
+            # Extraer id segun el formato del label
+            if sort_choice == "Numero":
+                nuevo_id = seleccion.split(" - ")[0]
+            else:
+                # Formato: "Nombre Apellidos (ALUXXX)"
+                nuevo_id = seleccion.split("(")[-1].rstrip(")")
 
         if nuevo_id != st.session_state.get("selected_student"):
             st.session_state.selected_student = nuevo_id
             st.session_state.messages = []
             st.session_state.session_id = str(uuid.uuid4())
             st.rerun()
+
+        # Header del alumno seleccionado
+        selected_data = get_student_data(nuevo_id) if nuevo_id else None
+        render_student_header(selected_data, "admin")
 
     # 3. PANEL DE EXPEDIENTE (solo alumno y admin con alumno seleccionado)
     target_id = st.session_state.get("selected_student")
@@ -222,6 +303,10 @@ def render_sidebar():
 
     # 6. BOTON CERRAR SESION
     st.markdown("---")
+    st.markdown(
+        '<span id="logout-anchor" style="display:none"></span>',
+        unsafe_allow_html=True,
+    )
     if st.button("Cerrar sesion", use_container_width=True, key="btn_logout"):
         from app.auth import reset_session
 

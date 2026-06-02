@@ -15,6 +15,7 @@ from src.config.settings import SQLITE_DB_PATH
 from app.components.sidebar import render_sidebar
 from app.components.chat import render_chat, process_message
 from app.components.login import render_login
+from app.utils.theme import init_theme, inject_theme_css, render_theme_toggle
 
 # ── Configuración de página (primera llamada Streamlit) ──────────────
 st.set_page_config(
@@ -24,11 +25,25 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Inyección de CSS personalizado ───────────────────────────────────
+# ── Tema: inicializar e inyectar CSS de variables ────────────────────
+init_theme()
+inject_theme_css()
+
+
+# ── Inyección de CSS personalizado (despues del tema) ────────────────
+def load_css(path: str):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    except FileNotFoundError:
+        pass
+
+
 _css_path = Path(__file__).parent / "styles" / "main.css"
-if _css_path.exists():
-    _css_content = _css_path.read_text(encoding="utf-8")
-    st.markdown(f"<style>{_css_content}</style>", unsafe_allow_html=True)
+load_css(str(_css_path))
+
+# ── Toggle de tema siempre visible (login y app) ─────────────────────
+render_theme_toggle()
 
 
 # ── Carga cacheada de la lista de alumnos ────────────────────────────
