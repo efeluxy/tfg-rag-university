@@ -55,10 +55,56 @@ ALU_RANGE_REGEX = re.compile(
     re.IGNORECASE,
 )
 
+# Keywords que indican que los números son IDs de alumno,
+# NO créditos, años u otras cifras.
+ALU_CONTEXT_REGEX = re.compile(
+    r"\b(?:alumnos?|estudiantes?|alu|del|el|los|expediente|"
+    r"info(?:rmacion)?\s+de|datos?\s+de)\b",
+    re.IGNORECASE,
+)
+
 MAX_BATCH_SIZE = 20
 
 
 # ── Funciones auxiliares ──────────────────────────────────────────────────────
+
+def _detect_short_id_list(message: str) -> List[str]:
+    """Detecta listas de IDs cortos como '001, 017 y 030'.
+
+    Solo activa si:
+      1. Hay separadores de lista (',' o ' y ').
+      2. El mensaje contiene keywords que sugieren alumnos.
+      3. Se detectan al menos 2 números válidos (1-999).
+    """
+    if not message:
+        return []
+    # Requiere separador de lista
+    if ("," not in message) and (" y " not in message.lower()):
+        return []
+    # Requiere contexto de alumnos
+    if not ALU_CONTEXT_REGEX.search(message):
+        return []
+    # Extraer todos los números de 1-3 dígitos
+    raw_numbers = re.findall(r"\b(\d{1,3})\b", message)
+    # Convertir a IDs válidos (1-999), sin duplicados, en orden
+    seen: set = set()
+    ids: List[str] = []
+    for n in raw_numbers:
+        try:
+            num = int(n)
+        except ValueError:
+            continue
+        if num < 1 or num > 999:
+            continue
+        uid = f"ALU{num:03d}"
+        if uid not in seen:
+            seen.add(uid)
+            ids.append(uid)
+    # Requiere al menos 2 para considerarlo lista
+    if len(ids) < 2:
+        return []
+    return ids
+
 
 def _extract_mentioned_student_ids(message: str) -> Tuple[List[str], bool]:
     """Devuelve (ids, truncated).
@@ -111,6 +157,13 @@ def _extract_mentioned_student_ids(message: str) -> Tuple[List[str], bool]:
         if len(ids) > MAX_BATCH_SIZE:
             return ids[:MAX_BATCH_SIZE], True
         return ids, False
+
+    # 3. Lista de IDs cortos ("001, 017 y 030") — fallback
+    short_list = _detect_short_id_list(message)
+    if short_list:
+        if len(short_list) > MAX_BATCH_SIZE:
+            return short_list[:MAX_BATCH_SIZE], True
+        return short_list, False
 
     return [], False
 

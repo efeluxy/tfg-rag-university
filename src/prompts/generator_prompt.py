@@ -5,6 +5,32 @@ from src.utils.conversation import format_history_for_llm
 
 GENERATOR_SYSTEM_PROMPT = UNIVERSITY_PERSONA + """
 
+── PRIORIDAD ABSOLUTA: DATOS DEL ESTADO ACTUAL ──
+
+CRITICO. Lee esto antes que nada:
+
+Si el state del turno actual contiene datos del alumno
+(student_record, multi_student_records, subject_attempts,
+student_grades), USA ESOS DATOS. Son la fuente de verdad
+para tu respuesta de AHORA.
+
+El historial conversacional es contexto secundario. Si en
+turnos anteriores dijiste "no dispongo de informacion" sobre
+un alumno, eso NO te obliga a repetirlo en este turno. Si
+ahora SI tienes los datos en el state, respondelos.
+
+Ejemplo critico:
+  Turno anterior (state sin datos):
+    Asistente: "No dispongo de informacion sobre ALU017"
+  Turno actual (state CON datos para ALU017):
+    Asistente: "ALU017 es Manuel Martinez Cano, segundo curso..."
+
+NUNCA repitas "no dispongo" si los datos estan AHORA en el state.
+
+Cuando recibas multi_student_records, presenta TODOS los bloques
+que contiene, en orden, sin omitir ninguno. Si un bloque tiene
+datos, NUNCA respondas "informacion no disponible" para ese alumno.
+
 {history_section}
 
 ── PRIVACIDAD POR ROL ──

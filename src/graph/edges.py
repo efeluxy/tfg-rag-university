@@ -13,6 +13,23 @@ _RANGE_RE = re.compile(
     r"\b(?:ALU)?0*\d{1,4}\b\s*(?:al|a|hasta|-)\s*\b(?:ALU)?0*\d{1,4}\b",
     re.IGNORECASE,
 )
+# Keywords que sugieren que números en una lista son IDs de alumno
+_ALU_CONTEXT_EDGE_RE = re.compile(
+    r"\b(?:alumnos?|estudiantes?|alu|expediente|info(?:rmacion)?)\b",
+    re.IGNORECASE,
+)
+
+
+def _has_short_id_list(message: str) -> bool:
+    """Heurístico: mensaje con comas/y + keywords + ≥2 números → lista de IDs."""
+    if not message:
+        return False
+    if "," not in message and " y " not in message.lower():
+        return False
+    if not _ALU_CONTEXT_EDGE_RE.search(message):
+        return False
+    nums = re.findall(r"\b\d{1,3}\b", message)
+    return len(nums) >= 2
 
 
 def route_after_router(state: UniversityAssistantState) -> str:
@@ -69,9 +86,13 @@ def route_after_retriever(state: UniversityAssistantState) -> str:
     if (requires or requires_detail) and user_id and str(user_id).strip():
         return "student_data"
 
-    # Siempre pasar por student_data si el mensaje menciona un ALU ID
-    # o un rango numérico de alumnos (para control de acceso y multi-query)
-    if _ALU_ID_RE.search(user_message) or _RANGE_RE.search(user_message):
+    # Siempre pasar por student_data si el mensaje menciona un ALU ID,
+    # un rango numérico o una lista de IDs cortos (para control de acceso)
+    if (
+        _ALU_ID_RE.search(user_message)
+        or _RANGE_RE.search(user_message)
+        or _has_short_id_list(user_message)
+    ):
         return "student_data"
 
     return "generator"
