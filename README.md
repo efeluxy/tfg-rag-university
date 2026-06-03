@@ -95,4 +95,4 @@ tfg-universidad-rag/
 
 ## Autor
 
-Félix García — TFG Ingeniería Informática, Universidad Demo
+Félix Godoy — TFG Ingeniería Informática, Universidad Demo

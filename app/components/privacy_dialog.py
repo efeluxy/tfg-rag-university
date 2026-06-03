@@ -132,83 +132,66 @@ legal ni una politica de privacidad de produccion.*
 
 
 def show_privacy_cookie_banner():
-    """
-    Renderiza el banner inferior de cookies/privacidad con backdrop
-    difuminado. Bloquea la interaccion con el resto de la app hasta
-    que el usuario decida.
-    """
-    # 1) Backdrop fijo que cubre toda la pantalla
+    """Banner de privacidad como tarjeta centrada. Sin backdrop ni position fixed."""
+
+    # Estilizar el block-container como tarjeta para esta pantalla
     st.markdown(
-        '<div class="privacy-backdrop"></div>',
+        """
+        <style>
+        .main .block-container {
+            max-width: 880px !important;
+            margin-top: 25vh !important;
+            background: var(--bg-secondary) !important;
+            border: 1.5px solid var(--border) !important;
+            border-radius: 14px !important;
+            padding: 2rem 2.5rem !important;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35) !important;
+        }
+        </style>
+        """,
         unsafe_allow_html=True,
     )
 
-    # 2) Container del banner. El marker permite que el CSS lo
-    # posicione como fixed en la parte inferior.
-    with st.container():
-        st.markdown(
-            '<span id="privacy-banner-marker" style="display:none"></span>',
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            '<div class="privacy-banner-title">Cookies y privacidad</div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            (
-                '<div class="privacy-banner-text">'
-                'Este es un prototipo academico (TFG 2026) con datos '
-                'sinteticos. Solo se usa almacenamiento de sesion del '
-                'navegador y logs locales en tu equipo. Los mensajes se '
-                'procesan via Azure OpenAI segun sus politicas. '
-                '<strong>No se utilizan cookies de terceros ni tracking '
-                'externo</strong>. Puedes aceptar todas, rechazar las '
-                'opcionales o personalizar.'
-                '</div>'
-            ),
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            (
-                '<div class="privacy-banner-links">'
-                'Pulsa <strong>Personalizar</strong> para ver el detalle '
-                'completo.'
-                '</div>'
-            ),
-            unsafe_allow_html=True,
-        )
+    st.markdown(
+        '<div class="privacy-banner-title">Cookies y privacidad</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div class="privacy-banner-text">'
+        'Este es un prototipo academico (TFG 2026) con datos sinteticos. '
+        'Solo se usa almacenamiento de sesion del navegador y logs locales '
+        'en tu equipo. Los mensajes se procesan via Azure OpenAI segun sus '
+        'politicas. <strong>No se utilizan cookies de terceros ni tracking '
+        'externo</strong>. Puedes aceptar todas, rechazar las opcionales o '
+        'personalizar.'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div class="privacy-banner-links">'
+        'Pulsa <strong>Personalizar</strong> para ver el detalle completo.'
+        '</div>',
+        unsafe_allow_html=True,
+    )
 
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            if st.button(
-                "Aceptar todas",
-                key="btn_priv_accept_all",
-                type="primary",
-                use_container_width=True,
-            ):
-                st.session_state["privacy_accepted"] = True
-                st.session_state["privacy_detailed_logs"] = True
-                st.rerun()
-        with c2:
-            if st.button(
-                "Rechazar opcionales",
-                key="btn_priv_essential",
-                use_container_width=True,
-            ):
-                st.session_state["privacy_accepted"] = True
-                st.session_state["privacy_detailed_logs"] = False
-                st.rerun()
-        with c3:
-            if st.button(
-                "Personalizar",
-                key="btn_priv_personalize",
-                use_container_width=True,
-            ):
-                st.session_state["privacy_show_detail"] = True
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        if st.button("Aceptar todas", key="btn_priv_accept_all",
+                     type="primary", use_container_width=True):
+            st.session_state["privacy_accepted"] = True
+            st.session_state["privacy_detailed_logs"] = True
+            st.rerun()
+    with c2:
+        if st.button("Rechazar opcionales", key="btn_priv_essential",
+                     use_container_width=True):
+            st.session_state["privacy_accepted"] = True
+            st.session_state["privacy_detailed_logs"] = False
+            st.rerun()
+    with c3:
+        if st.button("Personalizar", key="btn_priv_personalize",
+                     use_container_width=True):
+            st.session_state["privacy_show_detail"] = True
 
-    # 3) Si el usuario pulso "Personalizar", abrir el modal grande
-    # original con el detalle completo. El modal se renderiza encima
-    # del banner; al cerrarlo, el banner sigue visible.
     if st.session_state.get("privacy_show_detail", False):
         _privacy_dialog()
 
