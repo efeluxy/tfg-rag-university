@@ -155,10 +155,6 @@ hr {
     .stChatInput textarea {
         font-size: 0.95rem;
     }
-    div[data-testid="stMarkdown"]:has(> #theme-toggle-anchor) + div[data-testid="stButton"] > button {
-        padding: 0.3rem 0.7rem !important;
-        font-size: 0.8rem !important;
-    }
 }
 
 
@@ -232,33 +228,6 @@ section[data-testid="stSidebar"] > div::-webkit-scrollbar-thumb:hover,
     font-size: 0.9rem;
 }
 
-
-/* === BOTON CERRAR SESION (estilo invertido) === */
-
-/* Estado normal: borde y texto rojos, fondo transparente */
-[data-testid="stElementContainer"]:has(#logout-anchor) + [data-testid="stElementContainer"] > [data-testid="stButton"] > button {
-    background-color: transparent !important;
-    color: var(--danger) !important;
-    border: 1.5px solid var(--danger) !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
-}
-
-/* Estado hover: relleno rojo, texto blanco */
-[data-testid="stElementContainer"]:has(#logout-anchor) + [data-testid="stElementContainer"] > [data-testid="stButton"] > button:hover {
-    background-color: var(--danger) !important;
-    color: #ffffff !important;
-    border-color: var(--danger) !important;
-}
-
-/* Active */
-[data-testid="stElementContainer"]:has(#logout-anchor) + [data-testid="stElementContainer"] > [data-testid="stButton"] > button:active {
-    background-color: var(--danger-hover) !important;
-    border-color: var(--danger-hover) !important;
-    color: #ffffff !important;
-    transform: translateY(1px);
-}
 
 
 /* === HISTORIAL ACADEMICO EN SIDEBAR === */
@@ -476,20 +445,18 @@ section[data-testid="stSidebar"] .history-row {
 }
 
 
-/* ============================================================
-   SEGMENTED CONTROL (st.segmented_control)
-   ============================================================ */
-
-/* Contenedor general */
-[data-testid="stSegmentedControl"] {
+/* === SEGMENTED CONTROL (legible en claro y oscuro) === */
+[data-testid="stSegmentedControl"],
+div[data-baseweb="segmented-control"] {
     margin-bottom: 0.75rem !important;
 }
 
-/* Cada boton del segmented control */
+/* Boton inactivo: transparente con borde, texto primario */
 [data-testid="stSegmentedControl"] button,
-div[data-baseweb="segmented-control"] button {
+div[data-baseweb="segmented-control"] button,
+div[role="radiogroup"] button {
     background-color: transparent !important;
-    color: var(--text-secondary) !important;
+    color: var(--text-primary) !important;
     border: 1.5px solid var(--border) !important;
     border-radius: 8px !important;
     padding: 0.35rem 0.9rem !important;
@@ -498,38 +465,31 @@ div[data-baseweb="segmented-control"] button {
     transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
 }
 
-/* Boton inactivo: hover suave */
-[data-testid="stSegmentedControl"] button:hover,
-div[data-baseweb="segmented-control"] button:hover {
+/* Hover sobre inactivo */
+[data-testid="stSegmentedControl"] button:not([aria-checked="true"]):not([aria-pressed="true"]):hover,
+div[data-baseweb="segmented-control"] button:not([aria-checked="true"]):not([aria-pressed="true"]):hover {
     background-color: var(--bg-tertiary) !important;
-    color: var(--text-primary) !important;
     border-color: var(--text-muted) !important;
 }
 
-/* Boton ACTIVO: contraste alto con la app.
-   Usamos --text-primary como fondo y --bg-primary como color
-   para invertir automaticamente en cada tema. */
-[data-testid="stSegmentedControl"] button[aria-pressed="true"],
+/* Boton ACTIVO: fondo accent azul, texto blanco - legible en ambos temas */
 [data-testid="stSegmentedControl"] button[aria-checked="true"],
+[data-testid="stSegmentedControl"] button[aria-pressed="true"],
+div[data-baseweb="segmented-control"] button[aria-checked="true"],
 div[data-baseweb="segmented-control"] button[aria-pressed="true"],
-div[data-baseweb="segmented-control"] button[aria-checked="true"] {
-    background-color: var(--text-primary) !important;
-    color: var(--bg-primary) !important;
-    border-color: var(--text-primary) !important;
+div[role="radiogroup"] button[aria-checked="true"],
+div[role="radiogroup"] button[aria-pressed="true"] {
+    background-color: var(--accent) !important;
+    color: #ffffff !important;
+    border-color: var(--accent) !important;
     font-weight: 600 !important;
     cursor: default !important;
 }
-
-[data-testid="stSegmentedControl"] button[aria-pressed="true"]:hover,
-[data-testid="stSegmentedControl"] button[aria-checked="true"]:hover {
-    background-color: var(--text-primary) !important;
-    color: var(--bg-primary) !important;
-}
-
-/* Separacion ligera entre los dos botones */
-[data-testid="stSegmentedControl"] > div,
-div[data-baseweb="segmented-control"] {
-    gap: 0.35rem !important;
+[data-testid="stSegmentedControl"] button[aria-checked="true"]:hover,
+[data-testid="stSegmentedControl"] button[aria-pressed="true"]:hover {
+    background-color: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+    color: #ffffff !important;
 }
 
 
@@ -537,42 +497,6 @@ div[data-baseweb="segmented-control"] {
    BANNER INFERIOR DE COOKIES/PRIVACIDAD
    ============================================================ */
 
-/* Reset defensivo: el stAppViewContainer no debe quedar en fixed. */
-[data-testid="stAppViewContainer"] {
-    position: relative !important;
-}
-
-/* Backdrop: cubre toda la pantalla con oscurecimiento y blur. */
-.privacy-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    z-index: 1000;
-}
-
-/* Banner: el stVerticalBlock que contiene el marker se posiciona
-   fijo en la parte inferior, centrado horizontalmente.
-   El selector :has() apunta al stVerticalBlock que tiene como
-   descendiente cercano el span con id privacy-banner-marker. */
-div[data-testid="stVerticalBlock"]:has(> div > #privacy-banner-marker),
-div[data-testid="stVerticalBlock"]:has(> #privacy-banner-marker) {
-    position: fixed !important;
-    bottom: 1.5rem !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: min(880px, 92vw) !important;
-    max-height: 80vh !important;
-    overflow-y: auto !important;
-    background: var(--bg-secondary) !important;
-    color: var(--text-primary) !important;
-    border: 1.5px solid var(--border) !important;
-    border-radius: 14px !important;
-    padding: 1.5rem 1.75rem !important;
-    z-index: 1100 !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
-}
 
 .privacy-banner-title {
     font-size: 1.15rem !important;
@@ -693,3 +617,176 @@ section[data-testid="stChatInputContainer"] {
         padding: 0.4rem 0.25rem !important;
     }
 }
+
+
+/* === CARET (cursor de escritura) consistente con el tema === */
+input,
+textarea,
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea,
+[data-baseweb="input"] input,
+.stChatInput textarea {
+    caret-color: var(--text-primary) !important;
+}
+
+/* === BOTON DEL OJO (mostrar/ocultar contrasena) === */
+[data-testid="stTextInput"] [data-baseweb="input"] button,
+[data-testid="stTextInput"] button[aria-label],
+[data-baseweb="input"] button {
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+}
+[data-testid="stTextInput"] [data-baseweb="input"] button svg,
+[data-testid="stTextInput"] button svg,
+[data-baseweb="input"] button svg {
+    fill: var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+[data-testid="stTextInput"] [data-baseweb="input"] button:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* === HELPER TEXT "Press Enter to apply" === */
+[data-testid="InputInstructions"],
+[data-testid="stTextInputInstructions"],
+div[data-testid="InputInstructions"] *,
+div[data-baseweb="input"] + div small {
+    color: var(--text-muted) !important;
+    background-color: transparent !important;
+}
+
+/* Borde del input: forzar border tematico */
+[data-testid="stTextInput"] [data-baseweb="input"],
+[data-baseweb="input"] {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border) !important;
+}
+
+
+/* === CHAT INPUT: fondo coherente con el tema === */
+[data-testid="stBottom"],
+[data-testid="stBottomBlockContainer"],
+section[data-testid="stChatInputContainer"],
+section[data-testid="stChatInputContainer"] > div,
+[data-testid="stChatInput"],
+[data-testid="stChatInput"] > div {
+    background-color: var(--bg-primary) !important;
+}
+
+/* La caja interna del chat_input: tonalidad terciaria */
+[data-testid="stChatInput"] > div > div,
+.stChatInput > div > div {
+    background-color: var(--bg-tertiary) !important;
+    border: 1.5px solid var(--border) !important;
+}
+
+
+/* === EXPANDER: recuadro visible en ambos temas === */
+[data-testid="stExpander"],
+details[data-testid="stExpander"] {
+    background-color: var(--bg-secondary) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: 8px !important;
+    margin: 0.5rem 0 !important;
+    overflow: hidden !important;
+}
+[data-testid="stExpander"] summary,
+[data-testid="stExpander"] > div:first-child {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    padding: 0.6rem 0.9rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
+[data-testid="stExpander"] summary:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+[data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+    background-color: var(--bg-secondary) !important;
+    padding: 0.5rem 0.9rem 0.75rem 0.9rem !important;
+    border-top: 1.5px solid var(--border) !important;
+}
+section[data-testid="stSidebar"] [data-testid="stExpander"] {
+    background-color: var(--bg-tertiary) !important;
+}
+section[data-testid="stSidebar"] [data-testid="stExpander"] summary {
+    background-color: var(--bg-tertiary) !important;
+}
+
+
+
+
+/* === SEGMENTED CONTROL: activo en surface neutral (gris claro/medio) === */
+
+[data-testid="stSegmentedControl"] button[aria-checked="true"],
+[data-testid="stSegmentedControl"] button[aria-pressed="true"],
+div[data-baseweb="segmented-control"] button[aria-checked="true"],
+div[data-baseweb="segmented-control"] button[aria-pressed="true"],
+div[role="radiogroup"] button[aria-checked="true"],
+div[role="radiogroup"] button[aria-pressed="true"] {
+    background-color: var(--surface-active) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--surface-active) !important;
+    font-weight: 600 !important;
+    cursor: default !important;
+}
+[data-testid="stSegmentedControl"] button[aria-checked="true"]:hover,
+[data-testid="stSegmentedControl"] button[aria-pressed="true"]:hover,
+div[data-baseweb="segmented-control"] button[aria-checked="true"]:hover {
+    background-color: var(--surface-active) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--surface-active) !important;
+}
+
+/* === BOTON DEL OJO (mostrar/ocultar contrasena) - exhaustivo === */
+[data-testid="stTextInput"] [data-baseweb="input"] > div:last-child,
+[data-testid="stTextInput"] [data-baseweb="input"] [data-baseweb="input-enhancer"],
+[data-baseweb="input"] > div:last-child {
+    background-color: var(--bg-tertiary) !important;
+}
+
+[data-testid="stTextInput"] [data-baseweb="input"] button,
+[data-testid="stTextInput"] button[aria-label*="ontraseña" i],
+[data-testid="stTextInput"] button[aria-label*="assword" i],
+[data-baseweb="input"] button,
+[data-baseweb="input"] [role="button"] {
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+[data-testid="stTextInput"] [data-baseweb="input"] button:hover,
+[data-baseweb="input"] button:hover {
+    background-color: var(--bg-secondary) !important;
+}
+[data-testid="stTextInput"] [data-baseweb="input"] button svg,
+[data-testid="stTextInput"] [data-baseweb="input"] button svg *,
+[data-baseweb="input"] button svg,
+[data-baseweb="input"] button svg *,
+[data-baseweb="input"] svg path,
+[data-baseweb="input"] svg circle {
+    fill: var(--text-primary) !important;
+    stroke: var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+
+/* === Cerrar sesion en la columna izquierda === */
+div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button {
+    background-color: transparent !important;
+    color: var(--danger) !important;
+    border: 1.5px solid var(--danger) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 0.95rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background-color 0.15s ease, color 0.15s ease !important;
+    margin-top: 1rem !important;
+}
+div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:hover {
+    background-color: var(--danger) !important;
+    color: #ffffff !important;
+    border-color: var(--danger) !important;
+}
+

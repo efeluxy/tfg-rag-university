@@ -1,78 +1,35 @@
 """
-Gestion del tema visual de la aplicacion (claro/oscuro).
+Tema visual fijo (oscuro) de la aplicacion.
 
-Mantiene el tema activo en st.session_state["theme"] y expone:
-- init_theme(): inicializa el tema por defecto (oscuro) si no existe.
-- get_theme(): devuelve "dark" o "light".
-- toggle_theme(): cambia entre claro y oscuro y fuerza rerun.
-- inject_theme_css(): inyecta las variables CSS segun el tema activo.
-- render_theme_toggle(): renderiza el boton flotante de toggle.
+- inject_theme_css(): inyecta las variables CSS del tema oscuro en cada render.
+- render_logout_sidebar(): boton Cerrar sesion al final de la columna izquierda.
 """
 
 import streamlit as st
 
-THEME_DARK = "dark"
-THEME_LIGHT = "light"
-DEFAULT_THEME = THEME_DARK
-
-PALETTES = {
-    THEME_DARK: {
-        "bg_primary": "#0e1117",
-        "bg_secondary": "#1a1d24",
-        "bg_tertiary": "#262730",
-        "text_primary": "#fafafa",
-        "text_secondary": "#c4c7cf",
-        "text_muted": "#8a8d94",
-        "border": "#3a3d44",
-        "accent": "#4f8bff",
-        "accent_hover": "#3a73e0",
-        "danger": "#dc2626",
-        "danger_hover": "#991b1b",
-        "success": "#16a34a",
-        "warning": "#eab308",
-        "info_bg": "#1e3a5f",
-        "info_border": "#3a73e0",
-    },
-    THEME_LIGHT: {
-        "bg_primary": "#ffffff",
-        "bg_secondary": "#f4f6fa",
-        "bg_tertiary": "#e7eaf0",
-        "text_primary": "#1a1d24",
-        "text_secondary": "#3a3d44",
-        "text_muted": "#6b6e75",
-        "border": "#d0d4dc",
-        "accent": "#2563eb",
-        "accent_hover": "#1d4ed8",
-        "danger": "#dc2626",
-        "danger_hover": "#991b1b",
-        "success": "#16a34a",
-        "warning": "#ca8a04",
-        "info_bg": "#dbeafe",
-        "info_border": "#2563eb",
-    },
+_DARK_PALETTE = {
+    "bg_primary": "#0e1117",
+    "bg_secondary": "#1a1d24",
+    "bg_tertiary": "#262730",
+    "text_primary": "#fafafa",
+    "text_secondary": "#c4c7cf",
+    "text_muted": "#8a8d94",
+    "border": "#3a3d44",
+    "accent": "#4f8bff",
+    "accent_hover": "#3a73e0",
+    "danger": "#dc2626",
+    "danger_hover": "#991b1b",
+    "success": "#16a34a",
+    "warning": "#eab308",
+    "info_bg": "#1e3a5f",
+    "info_border": "#3a73e0",
+    "surface_active": "#4a4d54",
 }
 
 
-def init_theme():
-    if "theme" not in st.session_state:
-        st.session_state["theme"] = DEFAULT_THEME
-
-
-def get_theme() -> str:
-    init_theme()
-    return st.session_state["theme"]
-
-
-def toggle_theme():
-    current = get_theme()
-    st.session_state["theme"] = THEME_LIGHT if current == THEME_DARK else THEME_DARK
-
-
 def inject_theme_css():
-    theme = get_theme()
-    palette = PALETTES[theme]
     css_vars = "\n".join(
-        f"  --{k.replace('_', '-')}: {v};" for k, v in palette.items()
+        f"  --{k.replace('_', '-')}: {v};" for k, v in _DARK_PALETTE.items()
     )
 
     css = f"""
@@ -327,56 +284,22 @@ def inject_theme_css():
         color: var(--text-primary) !important;
     }}
 
-    /* ============================================================
-       TOGGLE DE TEMA (esquina superior derecha)
-       ============================================================ */
-    div[data-testid="stMarkdown"]:has(> #theme-toggle-anchor) {{
-        position: fixed;
-        top: 0;
-        right: 0;
-        height: 0;
-        width: 0;
-        z-index: 1000;
-    }}
-    div[data-testid="stMarkdown"]:has(> #theme-toggle-anchor) + div[data-testid="stButton"] {{
-        position: fixed;
-        top: 0.75rem;
-        right: 1rem;
-        z-index: 1000;
-        width: auto;
-    }}
-    div[data-testid="stMarkdown"]:has(> #theme-toggle-anchor) + div[data-testid="stButton"] > button {{
-        background-color: var(--bg-tertiary) !important;
-        color: var(--text-primary) !important;
-        border: 1.5px solid var(--border) !important;
-        border-radius: 999px !important;
-        padding: 0.35rem 0.95rem !important;
-        font-size: 0.85rem !important;
-        cursor: pointer !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-    }}
-    div[data-testid="stMarkdown"]:has(> #theme-toggle-anchor) + div[data-testid="stButton"] > button:hover {{
-        background-color: var(--bg-secondary) !important;
-    }}
-
-    @media (max-width: 640px) {{
-        div[data-testid="stMarkdown"]:has(> #theme-toggle-anchor) + div[data-testid="stButton"] > button {{
-            padding: 0.3rem 0.7rem !important;
-            font-size: 0.8rem !important;
-        }}
-    }}
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
 
 
-def render_theme_toggle():
-    theme = get_theme()
-    label = "Claro" if theme == THEME_DARK else "Oscuro"
+def render_logout_sidebar():
+    """Boton Cerrar sesion al final de la columna izquierda del chat."""
+    if not st.session_state.get("authenticated", False):
+        return
     st.markdown(
-        '<span id="theme-toggle-anchor" style="display:none"></span>',
+        '<span id="logout-sidebar-anchor" style="display:none"></span>',
         unsafe_allow_html=True,
     )
-    if st.button(label, key="btn_theme_toggle"):
-        toggle_theme()
+    if st.button("Cerrar sesion", key="btn_logout_sidebar",
+                 use_container_width=True):
+        for k in list(st.session_state.keys()):
+            if k not in ("privacy_accepted", "privacy_detailed_logs"):
+                del st.session_state[k]
         st.rerun()

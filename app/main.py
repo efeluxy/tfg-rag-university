@@ -15,7 +15,7 @@ from src.config.settings import SQLITE_DB_PATH
 from app.components.sidebar import render_sidebar
 from app.components.chat import render_chat, process_message
 from app.components.login import render_login
-from app.utils.theme import init_theme, inject_theme_css, render_theme_toggle
+from app.utils.theme import inject_theme_css
 from app.components.privacy_dialog import show_privacy_cookie_banner
 
 # ── Configuración de página (primera llamada Streamlit) ──────────────
@@ -26,8 +26,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Tema: inicializar e inyectar CSS de variables ────────────────────
-init_theme()
+# ── Tema: inyectar CSS de variables (tema oscuro fijo) ───────────────
 inject_theme_css()
 
 
@@ -42,9 +41,6 @@ def load_css(path: str):
 
 _css_path = Path(__file__).parent / "styles" / "main.css"
 load_css(str(_css_path))
-
-# ── Toggle de tema siempre visible (login y app) ─────────────────────
-render_theme_toggle()
 
 # ── Gate de politica de privacidad (primer acceso) ───────────────────
 if not st.session_state.get("privacy_accepted", False):

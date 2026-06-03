@@ -368,13 +368,5 @@ def render_sidebar():
     )
 
     # 6. BOTON CERRAR SESION
-    st.markdown("---")
-    st.markdown(
-        '<span id="logout-anchor" style="display:none"></span>',
-        unsafe_allow_html=True,
-    )
-    if st.button("Cerrar sesion", use_container_width=True, key="btn_logout"):
-        from app.auth import reset_session
-
-        reset_session(st.session_state)
-        st.rerun()
+    from app.utils.theme import render_logout_sidebar
+    render_logout_sidebar()
