@@ -772,6 +772,37 @@ div[data-baseweb="segmented-control"] button[aria-checked="true"]:hover {
 }
 
 
+/* === BORDES Y SEPARADORES EN NEGRO === */
+.stTextInput > div > div,
+.stSelectbox > div > div,
+.stTextArea > div > div {
+    border-color: #000000 !important;
+}
+.stButton > button {
+    border-color: #000000 !important;
+}
+hr,
+[data-testid="stDivider"] {
+    border-color: #000000 !important;
+    background-color: #000000 !important;
+}
+.stTabs [data-baseweb="tab-highlight"],
+.stTabs [data-baseweb="tab-border"] {
+    background-color: #000000 !important;
+}
+[data-baseweb="tab"][aria-selected="true"] {
+    border-bottom-color: #000000 !important;
+}
+
+/* === TEXTO BLANCO GLOBAL === */
+.stApp,
+.stApp p, .stApp label, .stApp span, .stApp div,
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6,
+.stMarkdown,
+[data-testid="stCaptionContainer"] {
+    color: #FFFFFF !important;
+}
+
 /* === Cerrar sesion en la columna izquierda === */
 div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button {
     background-color: transparent !important;
