@@ -8,9 +8,9 @@ Tema visual fijo (oscuro) de la aplicacion.
 import streamlit as st
 
 _DARK_PALETTE = {
-    "bg_primary": "#1E2A5E",
-    "bg_secondary": "#2A3970",
-    "bg_tertiary": "#334080",
+    "bg_primary": "#283655",
+    "bg_secondary": "#283655",
+    "bg_tertiary": "#283655",
     "text_primary": "#E8EAF2",
     "text_secondary": "#B8BDD8",
     "text_muted": "#8892C0",

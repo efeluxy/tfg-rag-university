@@ -784,15 +784,11 @@ div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="s
     transition: all 0.2s ease !important;
     margin-top: 1rem !important;
 }
-div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:hover {
-    background-color: #DC2626 !important;
-    color: #ffffff !important;
-    border-color: #DC2626 !important;
-}
+div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:hover,
 div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:active {
-    background-color: #B91C1C !important;
-    border-color: #B91C1C !important;
-    color: #ffffff !important;
+    background-color: transparent !important;
+    color: #DC2626 !important;
+    border-color: #DC2626 !important;
 }
 div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:focus {
     outline: none !important;
