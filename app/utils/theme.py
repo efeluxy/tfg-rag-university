@@ -102,7 +102,7 @@ def inject_theme_css():
        ============================================================ */
     section[data-testid="stSidebar"] {{
         background-color: var(--bg-secondary) !important;
-        border-right: 1px solid var(--border) !important;
+        border-right: 1.5px solid var(--border) !important;
     }}
     section[data-testid="stSidebar"] *,
     section[data-testid="stSidebar"] p,
@@ -150,7 +150,7 @@ def inject_theme_css():
     div[data-testid="stFormSubmitButton"] > button {{
         background-color: var(--bg-tertiary) !important;
         color: var(--text-primary) !important;
-        border: 1px solid var(--border) !important;
+        border: 1.5px solid var(--border) !important;
         border-radius: 8px !important;
         font-weight: 500 !important;
         cursor: pointer !important;
@@ -182,7 +182,7 @@ def inject_theme_css():
     [data-baseweb="textarea"] textarea {{
         background-color: var(--bg-tertiary) !important;
         color: var(--text-primary) !important;
-        border: 1px solid var(--border) !important;
+        border: 1.5px solid var(--border) !important;
     }}
     [data-testid="stTextInput"] input:focus,
     [data-testid="stTextArea"] textarea:focus {{
@@ -207,7 +207,7 @@ def inject_theme_css():
     }}
     div[data-baseweb="popover"] ul {{
         background-color: var(--bg-secondary) !important;
-        border: 1px solid var(--border) !important;
+        border: 1.5px solid var(--border) !important;
     }}
     div[data-baseweb="popover"] li {{
         color: var(--text-primary) !important;
@@ -233,7 +233,7 @@ def inject_theme_css():
        ============================================================ */
     [data-baseweb="tab-list"] {{
         background-color: transparent !important;
-        border-bottom: 1px solid var(--border) !important;
+        border-bottom: 1.5px solid var(--border) !important;
     }}
     [data-baseweb="tab"] {{
         color: var(--text-secondary) !important;
@@ -252,7 +252,7 @@ def inject_theme_css():
        ============================================================ */
     [data-testid="stChatMessage"] {{
         background-color: var(--bg-secondary) !important;
-        border: 1px solid var(--border) !important;
+        border: 1.5px solid var(--border) !important;
         border-radius: 12px !important;
         padding: 12px 16px !important;
         margin-bottom: 8px !important;
@@ -283,7 +283,7 @@ def inject_theme_css():
        ============================================================ */
     [data-testid="stAlert"] {{
         background-color: var(--info-bg) !important;
-        border: 1px solid var(--info-border) !important;
+        border: 1.5px solid var(--info-border) !important;
         color: var(--text-primary) !important;
     }}
     [data-testid="stAlert"] p,
@@ -315,7 +315,7 @@ def inject_theme_css():
     [data-testid="stModal"] > div {{
         background-color: var(--bg-secondary) !important;
         color: var(--text-primary) !important;
-        border: 1px solid var(--border) !important;
+        border: 1.5px solid var(--border) !important;
     }}
     [data-testid="stModal"] * {{
         color: var(--text-primary) !important;
@@ -348,7 +348,7 @@ def inject_theme_css():
     div[data-testid="stMarkdown"]:has(> #theme-toggle-anchor) + div[data-testid="stButton"] > button {{
         background-color: var(--bg-tertiary) !important;
         color: var(--text-primary) !important;
-        border: 1px solid var(--border) !important;
+        border: 1.5px solid var(--border) !important;
         border-radius: 999px !important;
         padding: 0.35rem 0.95rem !important;
         font-size: 0.85rem !important;

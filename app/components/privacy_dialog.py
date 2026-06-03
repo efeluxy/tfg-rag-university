@@ -3,102 +3,14 @@ Modal de politicas de privacidad y uso responsable.
 
 Usa st.dialog (disponible desde Streamlit 1.35) para mostrar la politica
 en un overlay.
-- abrir_dialogo_privacidad(): abre el modal completo de 9 secciones (manual).
-- show_privacy_dialog_auto(): modal automatico al primer acceso con boton
-  "He leido y acepto" obligatorio.
+- _privacy_dialog(): modal grande con detalle completo (9 secciones).
+  Accesible desde el boton "Personalizar" del banner.
+- show_privacy_cookie_banner(): banner inferior tipo cookies con backdrop
+  difuminado y 3 botones. Sustituye al modal automatico del v2.
+- abrir_dialogo_privacidad(): invoca _privacy_dialog() desde un boton-enlace.
 """
 
 import streamlit as st
-
-
-@st.dialog("Politica de privacidad y uso responsable", width="large")
-def show_privacy_dialog_auto():
-    """
-    Modal automatico que aparece en el primer acceso.
-    Solo se cierra al pulsar 'He leido y acepto'.
-    """
-    st.markdown(
-        """
-### Antes de empezar, lee este aviso
-
-Este Asistente Universitario Inteligente es un **prototipo academico**
-desarrollado como Trabajo Final de Grado (TFG 2026). No esta destinado
-a uso en produccion y no sustituye a los servicios oficiales de
-orientacion academica o asistencia psicologica de ninguna universidad.
-
-#### 1. Datos sinteticos
-
-Todos los expedientes, calificaciones y registros academicos pertenecen
-a **50 alumnos sinteticos generados algoritmicamente**. No corresponden
-a personas reales. Las credenciales son compartidas y publicas dentro
-del entorno de demostracion.
-
-#### 2. Procesamiento de mensajes
-
-Los mensajes que escribas se envian a Azure OpenAI (GPT-4o) para su
-procesamiento. La conversacion se mantiene en la sesion del navegador
-y se pierde al cerrarla. **No se persiste en base de datos**.
-
-#### 3. Logs locales
-
-Se registran eventos de acceso, intentos de violacion de privacidad y
-alertas criticas del sistema emocional, todos en archivos locales bajo
-`logs/`. No se envian a servidores externos.
-
-#### 4. Sistema emocional
-
-El asistente detecta tres niveles emocionales:
-- **Estres academico:** respuesta empatica con recursos universitarios.
-- **Malestar emocional no critico:** disclaimer y derivacion firme a
-  profesionales humanos.
-- **Crisis grave:** respuesta predefinida con telefonos de emergencia
-  (024, 112). El sistema no se ofrece como interlocutor en crisis.
-
-El sistema esta sesgado al alza: ante duda, escala de nivel. Esto puede
-generar falsos positivos, pero es una decision consciente: preferimos
-falsos positivos a falsos negativos en seguridad emocional.
-
-**Si te encuentras en una situacion de crisis personal, contacta con
-un profesional sanitario o con el 024 (atencion a la conducta suicida).**
-
-#### 5. Aislamiento por rol
-
-- Un alumno autenticado solo puede consultar SU propio expediente.
-- Un administrador puede consultar todos los expedientes.
-- Cualquier intento de saltarse el aislamiento queda registrado.
-
-#### 6. Limitaciones declaradas
-
-Como prototipo academico:
-- Contrasenas en texto plano (no hash).
-- Sin bloqueo por intentos fallidos.
-- Sin expiracion de sesion.
-- Sin HTTPS forzado (Streamlit local).
-- Alertas criticas: solo logs locales, sin email/SMS reales.
-
-#### 7. Contacto
-
-Cualquier consulta sobre este TFG: Felix Garcia, a traves de los
-canales academicos correspondientes.
-
----
-
-*Documento informativo asociado al TFG 2026. No constituye una politica
-de privacidad de produccion ni un compromiso legal.*
-        """
-    )
-
-    st.markdown("---")
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button(
-            "He leido y acepto",
-            key="btn_accept_privacy_auto",
-            use_container_width=True,
-            type="primary",
-        ):
-            st.session_state["privacy_accepted"] = True
-            st.rerun()
 
 
 @st.dialog("Politica de privacidad y uso responsable", width="large")
@@ -217,6 +129,88 @@ legal ni una politica de privacidad de produccion.*
 
     if st.button("Cerrar", key="btn_close_privacy_dialog"):
         st.rerun()
+
+
+def show_privacy_cookie_banner():
+    """
+    Renderiza el banner inferior de cookies/privacidad con backdrop
+    difuminado. Bloquea la interaccion con el resto de la app hasta
+    que el usuario decida.
+    """
+    # 1) Backdrop fijo que cubre toda la pantalla
+    st.markdown(
+        '<div class="privacy-backdrop"></div>',
+        unsafe_allow_html=True,
+    )
+
+    # 2) Container del banner. El marker permite que el CSS lo
+    # posicione como fixed en la parte inferior.
+    with st.container():
+        st.markdown(
+            '<span id="privacy-banner-marker" style="display:none"></span>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            '<div class="privacy-banner-title">Cookies y privacidad</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            (
+                '<div class="privacy-banner-text">'
+                'Este es un prototipo academico (TFG 2026) con datos '
+                'sinteticos. Solo se usa almacenamiento de sesion del '
+                'navegador y logs locales en tu equipo. Los mensajes se '
+                'procesan via Azure OpenAI segun sus politicas. '
+                '<strong>No se utilizan cookies de terceros ni tracking '
+                'externo</strong>. Puedes aceptar todas, rechazar las '
+                'opcionales o personalizar.'
+                '</div>'
+            ),
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            (
+                '<div class="privacy-banner-links">'
+                'Pulsa <strong>Personalizar</strong> para ver el detalle '
+                'completo.'
+                '</div>'
+            ),
+            unsafe_allow_html=True,
+        )
+
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            if st.button(
+                "Aceptar todas",
+                key="btn_priv_accept_all",
+                type="primary",
+                use_container_width=True,
+            ):
+                st.session_state["privacy_accepted"] = True
+                st.session_state["privacy_detailed_logs"] = True
+                st.rerun()
+        with c2:
+            if st.button(
+                "Rechazar opcionales",
+                key="btn_priv_essential",
+                use_container_width=True,
+            ):
+                st.session_state["privacy_accepted"] = True
+                st.session_state["privacy_detailed_logs"] = False
+                st.rerun()
+        with c3:
+            if st.button(
+                "Personalizar",
+                key="btn_priv_personalize",
+                use_container_width=True,
+            ):
+                st.session_state["privacy_show_detail"] = True
+
+    # 3) Si el usuario pulso "Personalizar", abrir el modal grande
+    # original con el detalle completo. El modal se renderiza encima
+    # del banner; al cerrarlo, el banner sigue visible.
+    if st.session_state.get("privacy_show_detail", False):
+        _privacy_dialog()
 
 
 def abrir_dialogo_privacidad():

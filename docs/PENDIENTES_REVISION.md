@@ -128,6 +128,27 @@ Aplicados via TFG_Prompt_UI_Refinements_v2.txt. Notas:
 
 ---
 
+## Refinamientos UI v3 (2026-06-03)
+
+Aplicados via TFG_Prompt_UI_Refinements_v3.txt. Notas:
+
+- Banner de cookies/privacidad: replicado el estilo de un banner
+  estandar (3 botones, backdrop difuminado) pero con texto adaptado
+  al contexto TFG: no se mencionan Google Analytics ni cookies de
+  terceros porque el sistema no los usa.
+- El flag `privacy_detailed_logs` queda almacenado en session_state
+  pero no se consume actualmente en la logica del sistema. Trabajo
+  futuro: conectar este flag con la verbosidad de los logs en
+  src/utils/logger.py.
+- Segmented_control requiere Streamlit >= 1.41. Si una version
+  futura cambia los data-testid, sera necesario revisar los
+  selectores CSS en app/styles/main.css.
+- El selector CSS :has() del banner depende del navegador moderno.
+  Fallback con JavaScript documentado en el prompt v3 por si fuera
+  necesario en otro entorno.
+
+---
+
 ## Refinamientos UI (2026-06-02)
 
 Aplicados via TFG_Prompt_UI_Refinements.txt. Notas:

@@ -324,3 +324,372 @@ section[data-testid="stSidebar"] > div::-webkit-scrollbar-thumb:hover,
     font-size: 0.85rem;
     padding: 0.5rem 0.25rem;
 }
+
+
+/* ============================================================
+   JERARQUIA TIPOGRAFICA
+   ============================================================ */
+
+/* Titulos h1-h3 en area principal */
+[data-testid="stMarkdownContainer"] h1,
+.main h1 {
+    font-size: 1.7rem !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+    margin: 0.5rem 0 0.75rem 0 !important;
+}
+[data-testid="stMarkdownContainer"] h2,
+.main h2 {
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    margin: 1rem 0 0.5rem 0 !important;
+}
+[data-testid="stMarkdownContainer"] h3,
+.main h3 {
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    margin: 0.8rem 0 0.4rem 0 !important;
+}
+
+/* Texto normal de parrafos en area principal */
+[data-testid="stMarkdownContainer"] p,
+.main p {
+    font-size: 0.95rem !important;
+    font-weight: 400 !important;
+    line-height: 1.55 !important;
+    color: var(--text-primary) !important;
+}
+
+/* Texto secundario / caption */
+.main small,
+[data-testid="stCaptionContainer"] {
+    font-size: 0.82rem !important;
+    color: var(--text-muted) !important;
+}
+
+/* === LABELS DE WIDGETS (subtitulos de campo) === */
+label[data-testid="stWidgetLabel"],
+label[data-testid="stWidgetLabel"] p,
+.stTextInput > label,
+.stSelectbox > label,
+.stRadio > label,
+.stTextArea > label,
+.stNumberInput > label {
+    font-size: 0.92rem !important;
+    font-weight: 600 !important;
+    color: var(--text-secondary) !important;
+    margin-bottom: 0.35rem !important;
+    line-height: 1.3 !important;
+}
+
+/* Las opciones DENTRO de un radio o segmented_control son texto normal */
+[data-testid="stRadio"] [role="radiogroup"] label > div:last-child,
+[data-testid="stRadio"] [role="radiogroup"] label p,
+[data-testid="stSegmentedControl"] button,
+div[data-baseweb="segmented-control"] button {
+    font-size: 0.92rem !important;
+    font-weight: 400 !important;
+    color: var(--text-primary) !important;
+}
+
+/* La opcion seleccionada del segmented_control se marca en negrita */
+[data-testid="stSegmentedControl"] button[aria-pressed="true"],
+div[data-baseweb="segmented-control"] button[aria-checked="true"] {
+    font-weight: 600 !important;
+}
+
+/* === SIDEBAR: jerarquia interna === */
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2 {
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    color: var(--accent) !important;
+    margin-bottom: 0.25rem !important;
+}
+section[data-testid="stSidebar"] h3 {
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+}
+section[data-testid="stSidebar"] p {
+    font-size: 0.88rem !important;
+    color: var(--text-secondary) !important;
+}
+section[data-testid="stSidebar"] label[data-testid="stWidgetLabel"],
+section[data-testid="stSidebar"] label[data-testid="stWidgetLabel"] p {
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Refuerzo: student-header conserva su jerarquia propia */
+section[data-testid="stSidebar"] .student-header-name {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+}
+section[data-testid="stSidebar"] .student-header-sub {
+    font-size: 0.92rem !important;
+    font-weight: 500 !important;
+    color: var(--text-secondary) !important;
+}
+section[data-testid="stSidebar"] .student-header-meta {
+    font-size: 0.82rem !important;
+    font-weight: 400 !important;
+    color: var(--text-muted) !important;
+}
+
+
+/* ============================================================
+   LINEAS Y SEPARADORES MAS GRUESOS
+   ============================================================ */
+
+/* Separador horizontal generico */
+hr,
+[data-testid="stMarkdownContainer"] hr {
+    border: none !important;
+    border-top: 1.5px solid var(--border) !important;
+    margin: 1rem 0 !important;
+}
+
+/* Separador inferior del header del alumno (sidebar) */
+.student-header {
+    border-bottom: 1.5px solid var(--border) !important;
+}
+
+/* Separadores del historial academico */
+section[data-testid="stSidebar"] .history-summary {
+    border-bottom: 1.5px solid var(--border) !important;
+}
+section[data-testid="stSidebar"] .history-year {
+    border-bottom: 1.5px dashed var(--border) !important;
+}
+section[data-testid="stSidebar"] .history-row {
+    border-bottom: 1.5px solid var(--border) !important;
+}
+
+/* Subrayado de pestana activa: ligeramente mas grueso */
+[data-baseweb="tab"][aria-selected="true"] {
+    border-bottom-width: 2.5px !important;
+}
+
+
+/* ============================================================
+   SEGMENTED CONTROL (st.segmented_control)
+   ============================================================ */
+
+/* Contenedor general */
+[data-testid="stSegmentedControl"] {
+    margin-bottom: 0.75rem !important;
+}
+
+/* Cada boton del segmented control */
+[data-testid="stSegmentedControl"] button,
+div[data-baseweb="segmented-control"] button {
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: 8px !important;
+    padding: 0.35rem 0.9rem !important;
+    font-weight: 400 !important;
+    cursor: pointer !important;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
+}
+
+/* Boton inactivo: hover suave */
+[data-testid="stSegmentedControl"] button:hover,
+div[data-baseweb="segmented-control"] button:hover {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--text-muted) !important;
+}
+
+/* Boton ACTIVO: contraste alto con la app.
+   Usamos --text-primary como fondo y --bg-primary como color
+   para invertir automaticamente en cada tema. */
+[data-testid="stSegmentedControl"] button[aria-pressed="true"],
+[data-testid="stSegmentedControl"] button[aria-checked="true"],
+div[data-baseweb="segmented-control"] button[aria-pressed="true"],
+div[data-baseweb="segmented-control"] button[aria-checked="true"] {
+    background-color: var(--text-primary) !important;
+    color: var(--bg-primary) !important;
+    border-color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    cursor: default !important;
+}
+
+[data-testid="stSegmentedControl"] button[aria-pressed="true"]:hover,
+[data-testid="stSegmentedControl"] button[aria-checked="true"]:hover {
+    background-color: var(--text-primary) !important;
+    color: var(--bg-primary) !important;
+}
+
+/* Separacion ligera entre los dos botones */
+[data-testid="stSegmentedControl"] > div,
+div[data-baseweb="segmented-control"] {
+    gap: 0.35rem !important;
+}
+
+
+/* ============================================================
+   BANNER INFERIOR DE COOKIES/PRIVACIDAD
+   ============================================================ */
+
+/* Reset defensivo: el stAppViewContainer no debe quedar en fixed. */
+[data-testid="stAppViewContainer"] {
+    position: relative !important;
+}
+
+/* Backdrop: cubre toda la pantalla con oscurecimiento y blur. */
+.privacy-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 1000;
+}
+
+/* Banner: el stVerticalBlock que contiene el marker se posiciona
+   fijo en la parte inferior, centrado horizontalmente.
+   El selector :has() apunta al stVerticalBlock que tiene como
+   descendiente cercano el span con id privacy-banner-marker. */
+div[data-testid="stVerticalBlock"]:has(> div > #privacy-banner-marker),
+div[data-testid="stVerticalBlock"]:has(> #privacy-banner-marker) {
+    position: fixed !important;
+    bottom: 1.5rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: min(880px, 92vw) !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: 14px !important;
+    padding: 1.5rem 1.75rem !important;
+    z-index: 1100 !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.privacy-banner-title {
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+    margin-bottom: 0.5rem !important;
+}
+.privacy-banner-text {
+    font-size: 0.92rem !important;
+    color: var(--text-primary) !important;
+    line-height: 1.5 !important;
+    margin-bottom: 0.6rem !important;
+}
+.privacy-banner-text strong {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+}
+.privacy-banner-links {
+    font-size: 0.82rem !important;
+    color: var(--text-muted) !important;
+    margin-bottom: 1rem !important;
+}
+.privacy-banner-links strong {
+    color: var(--text-secondary) !important;
+    font-weight: 600 !important;
+}
+
+
+/* ============================================================
+   CHAT INPUT (st.chat_input)
+   ============================================================ */
+
+/* Placeholder visible en ambos temas */
+[data-testid="stChatInput"] textarea::placeholder,
+.stChatInput textarea::placeholder,
+section[data-testid="stChatInputContainer"] textarea::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 1 !important;
+    font-style: italic !important;
+}
+
+/* Texto introducido en el input */
+[data-testid="stChatInput"] textarea,
+.stChatInput textarea {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-tertiary) !important;
+    border: 1.5px solid var(--border) !important;
+}
+
+/* Focus: borde acento */
+[data-testid="stChatInput"] textarea:focus,
+.stChatInput textarea:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 1px var(--accent) !important;
+}
+
+/* === LIMITAR ANCHURA DEL CONTENEDOR DEL CHAT INPUT === */
+[data-testid="stBottom"],
+[data-testid="stBottomBlockContainer"],
+section[data-testid="stChatInputContainer"] {
+    max-width: 1840px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    left: auto !important;
+    right: auto !important;
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+}
+
+/* El input en si: ancho 100% del contenedor padre */
+[data-testid="stChatInput"],
+.stChatInput {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Responsive: tablet */
+@media (max-width: 1280px) {
+    [data-testid="stBottom"],
+    [data-testid="stBottomBlockContainer"],
+    section[data-testid="stChatInputContainer"] {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+/* Responsive: movil */
+@media (max-width: 640px) {
+    [data-testid="stBottom"],
+    [data-testid="stBottomBlockContainer"],
+    section[data-testid="stChatInputContainer"] {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+}
+
+
+/* ============================================================
+   PESTANAS DEL LOGIN: SEPARACION HORIZONTAL
+   ============================================================ */
+
+/* Aumentar el gap entre las pestanas */
+[data-baseweb="tab-list"] {
+    gap: 1.75rem !important;
+}
+
+/* Padding interno de cada pestana (un poco mas de "respiracion") */
+[data-baseweb="tab"] {
+    padding: 0.5rem 0.4rem !important;
+}
+
+/* Responsive: en movil, reducir el gap para no romper layout */
+@media (max-width: 640px) {
+    [data-baseweb="tab-list"] {
+        gap: 1rem !important;
+    }
+    [data-baseweb="tab"] {
+        padding: 0.4rem 0.25rem !important;
+    }
+}

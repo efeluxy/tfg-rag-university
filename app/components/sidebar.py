@@ -267,13 +267,16 @@ def render_sidebar():
         if "student_sort" not in st.session_state:
             st.session_state["student_sort"] = "Numero"
 
-        sort_choice = st.radio(
+        sort_choice = st.segmented_control(
             label="Ordenar por",
             options=["Numero", "Alfabetico"],
-            index=0 if st.session_state["student_sort"] == "Numero" else 1,
-            horizontal=True,
-            key="radio_student_sort",
+            default=st.session_state.get("student_sort", "Numero"),
+            key="seg_student_sort",
+            selection_mode="single",
         )
+        # segmented_control puede devolver None si no hay seleccion
+        if sort_choice is None:
+            sort_choice = "Numero"
         st.session_state["student_sort"] = sort_choice
 
         all_students = load_all_students()
