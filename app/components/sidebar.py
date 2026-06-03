@@ -243,8 +243,8 @@ def render_sidebar():
     st.markdown(
         """
         <div style="text-align:center; padding: 10px 0 6px 0;">
-          <h2 style="color:#1F4E8A; font-size:1.4rem; margin:0;">Universidad Demo</h2>
-          <p style="color:#555577; font-size:0.85rem; margin:4px 0 0 0;">Asistente de Orientacion</p>
+          <h2 style="color:var(--accent); font-size:1.4rem; margin:0;">Universidad Demo</h2>
+          <p style="color:var(--text-secondary); font-size:0.85rem; margin:4px 0 0 0;">Asistente de Orientacion</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -344,7 +344,7 @@ def render_sidebar():
     st.markdown("---")
     st.markdown(
         """
-        <div style="font-size:0.75rem; color:#888; text-align:center; line-height:1.8;">
+        <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; line-height:1.8;">
           Azure AI Search conectado<br>
           v1.0 -- TFG 2026<br>
           94 chunks indexados
@@ -354,9 +354,9 @@ def render_sidebar():
     )
     st.markdown(
         """
-        <div style="font-size:0.70rem; color:#888; text-align:center;
+        <div style="font-size:0.70rem; color:var(--text-muted); text-align:center;
                     line-height:1.5; padding:8px; margin-top:10px;
-                    border-top:1px solid #333;">
+                    border-top:1px solid var(--border);">
           <b>Aviso de seguridad:</b><br>
           Si el sistema detecta una situacion de crisis emocional grave,
           se generara un aviso automatico al Servicio de Orientacion

@@ -31,7 +31,7 @@ def render_login() -> None:
     st.markdown(
         """
         <div style="text-align:center; padding: 30px 0 15px 0;">
-          <h1 style="color:#1F4E8A; margin:0;">Universidad Demo</h1>
+          <h1 style="color:var(--accent); margin:0;">Universidad Demo</h1>
           <p style="font-size:1rem; margin:8px 0 0 0;">
             Asistente de Orientacion Universitaria
           </p>

@@ -8,22 +8,22 @@ Tema visual fijo (oscuro) de la aplicacion.
 import streamlit as st
 
 _DARK_PALETTE = {
-    "bg_primary": "#0e1117",
-    "bg_secondary": "#1a1d24",
-    "bg_tertiary": "#262730",
-    "text_primary": "#fafafa",
-    "text_secondary": "#c4c7cf",
-    "text_muted": "#8a8d94",
-    "border": "#3a3d44",
+    "bg_primary": "#1E2A5E",
+    "bg_secondary": "#2A3970",
+    "bg_tertiary": "#334080",
+    "text_primary": "#E8EAF2",
+    "text_secondary": "#B8BDD8",
+    "text_muted": "#8892C0",
+    "border": "#3D4F8A",
     "accent": "#4f8bff",
     "accent_hover": "#3a73e0",
     "danger": "#dc2626",
     "danger_hover": "#991b1b",
     "success": "#16a34a",
     "warning": "#eab308",
-    "info_bg": "#1e3a5f",
+    "info_bg": "#1E3070",
     "info_border": "#3a73e0",
-    "surface_active": "#4a4d54",
+    "surface_active": "#3D4F8A",
 }
 
 
