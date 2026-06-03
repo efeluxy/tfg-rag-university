@@ -775,18 +775,27 @@ div[data-baseweb="segmented-control"] button[aria-checked="true"]:hover {
 /* === Cerrar sesion en la columna izquierda === */
 div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button {
     background-color: transparent !important;
-    color: var(--danger) !important;
-    border: 1.5px solid var(--danger) !important;
+    color: #DC2626 !important;
+    border: 1px solid #DC2626 !important;
     border-radius: 8px !important;
     padding: 0.5rem 0.95rem !important;
     font-weight: 600 !important;
     cursor: pointer !important;
-    transition: background-color 0.15s ease, color 0.15s ease !important;
+    transition: all 0.2s ease !important;
     margin-top: 1rem !important;
 }
 div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:hover {
-    background-color: var(--danger) !important;
+    background-color: #DC2626 !important;
     color: #ffffff !important;
-    border-color: var(--danger) !important;
+    border-color: #DC2626 !important;
+}
+div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:active {
+    background-color: #B91C1C !important;
+    border-color: #B91C1C !important;
+    color: #ffffff !important;
+}
+div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.4) !important;
 }
 
