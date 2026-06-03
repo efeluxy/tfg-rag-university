@@ -93,9 +93,9 @@ def render_student_header(student: dict | None, role: str) -> None:
     line3_parts = [p for p in (year_label, gpa_label, status_label) if p]
     line3 = " - ".join(line3_parts)
 
-    # Iniciales para el avatar
+    # Iniciales: primer token + segundo token (nombre + primer apellido)
     parts = name.split()
-    initials = (parts[0][0] + parts[-1][0]).upper() if len(parts) >= 2 else name[:2].upper()
+    initials = (parts[0][0] + parts[1][0]).upper() if len(parts) >= 2 else name[:2].upper()
 
     st.markdown(
         f"""
@@ -208,22 +208,22 @@ def _render_expediente_card(student_id: str) -> None:
 
     st.markdown(
         f"""
-        <div class="expediente-card">
-          <div class="expediente-stat">
-            <span>Grado</span>
-            <span style="font-size:0.78rem; text-align:right;">{degree_short}</span>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Grado</div>
+            <div class="metric-value" style="font-size:12px;">{degree_short}</div>
           </div>
-          <div class="expediente-stat">
-            <span>Curso</span>
-            <span>{student.get('year', '---')}o</span>
+          <div class="metric-card">
+            <div class="metric-label">Curso</div>
+            <div class="metric-value">{student.get('year', '---')}º</div>
           </div>
-          <div class="expediente-stat">
-            <span>Media (GPA)</span>
-            <span style="color:{gpa_color}; font-weight:700;">{gpa:.2f}</span>
+          <div class="metric-card">
+            <div class="metric-label">GPA</div>
+            <div class="metric-value" style="color:{gpa_color};">{gpa:.2f}</div>
           </div>
-          <div class="expediente-stat">
-            <span>Estado</span>
-            <span class="{badge_class}">{badge_label}</span>
+          <div class="metric-card">
+            <div class="metric-label">Estado</div>
+            <div class="metric-value"><span class="{badge_class}">{badge_label}</span></div>
           </div>
         </div>
         """,
@@ -249,7 +249,7 @@ def render_sidebar():
         """
         <div style="padding: 16px 0 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 16px;">
           <div style="font-size:1.4rem; font-weight:700; color:var(--text); margin:0; line-height:1.2;">🎓 Universidad Demo</div>
-          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Asistente de Orientacion IA</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Asistente de Orientacion Universitaria</div>
         </div>
         """,
         unsafe_allow_html=True,

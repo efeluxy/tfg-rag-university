@@ -401,9 +401,15 @@ section[data-testid="stSidebar"] label {
     border-bottom-color: var(--primary) !important;
     font-weight: 600 !important;
 }
-.stTabs [data-baseweb="tab-highlight"],
-.stTabs [data-baseweb="tab-border"] {
+/* tab-highlight: indicador de pestaña activa (fino, azul) */
+.stTabs [data-baseweb="tab-highlight"] {
     background-color: var(--primary) !important;
+    height: 2px !important;
+}
+/* tab-border: línea horizontal bajo toda la barra — neutra, NO azul */
+.stTabs [data-baseweb="tab-border"] {
+    background-color: var(--border) !important;
+    height: 1px !important;
 }
 
 /* ============================================================
@@ -549,6 +555,12 @@ div[data-testid="stButton"] > button[kind="primary"]:hover,
 div[data-testid="stFormSubmitButton"] > button[kind="primary"]:hover {
     background: var(--primary-hover) !important;
     box-shadow: 0 4px 12px rgba(0,120,212,0.30) !important;
+}
+/* B1.1 — Forzar texto blanco en botón primario */
+div[data-testid="stButton"] > button[kind="primary"],
+div[data-testid="stFormSubmitButton"] > button[kind="primary"],
+button[data-testid="stBaseButton-primary"] {
+    color: #FFFFFF !important;
 }
 
 /* Botón secundario */
@@ -793,6 +805,79 @@ section[data-testid="stSidebar"] label[data-testid="stWidgetLabel"] p {
     font-size: 11px !important;
     font-weight: 500 !important;
     color: var(--text-muted) !important;
+}
+
+/* ============================================================
+   B4.1 — INPUT DEL CHAT EN GRIS AZULADO
+   ============================================================ */
+[data-testid="stChatInput"] {
+    background-color: #EEF2F7 !important;
+    border: 1px solid var(--input-border) !important;
+    border-radius: 14px !important;
+}
+[data-testid="stChatInput"] textarea {
+    background-color: transparent !important;
+}
+
+/* ============================================================
+   B4.2 — ELIMINAR SCROLL FANTASMA
+   ============================================================ */
+.block-container,
+[data-testid="stMainBlockContainer"] {
+    padding-bottom: 2rem !important;
+    min-height: auto !important;
+}
+
+/* ============================================================
+   CHIPS DE SUGERENCIAS
+   ============================================================ */
+.suggestion-chip {
+    display: inline-block;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    margin: 4px;
+}
+.suggestion-chip:hover {
+    background: #E8F0FA;
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* ============================================================
+   MÉTRICAS 2×2
+   ============================================================ */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+}
+.metric-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+}
+.metric-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
 }
 
 /* ============================================================

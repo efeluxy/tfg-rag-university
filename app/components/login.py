@@ -27,10 +27,11 @@ def _start_session(role: str, user_id: str | None) -> None:
 def render_login() -> None:
     """Renderiza la pantalla de login como card centrada."""
 
-    # Card centrada via columnas
+    # Card centrada via columnas + contenedor con borde nativo
     _, col, _ = st.columns([1, 2, 1])
 
     with col:
+      with st.container(border=True):
         # Cabecera
         st.markdown(
             """

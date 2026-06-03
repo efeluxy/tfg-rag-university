@@ -87,7 +87,7 @@ def render_chat() -> None:
 
     st.markdown(
         "<h3 style='color:var(--text); margin-bottom:4px;'>"
-        "Asistente de Orientacion Universitaria</h3>",
+        "💬 Asistente de Orientacion Universitaria</h3>",
         unsafe_allow_html=True,
     )
     if subtitulo:
@@ -97,30 +97,83 @@ def render_chat() -> None:
 
     # 2. ÁREA DE MENSAJES
     mensajes = st.session_state.get("messages", [])
+
+    # 2.0 ESTADO DE BIENVENIDA (solo cuando no hay mensajes)
+    if not mensajes and not st.session_state.get("processing"):
+        # Personalizar saludo
+        if role == "student" or (role == "admin" and selected):
+            nombre_corto = next(
+                (s["name"].split()[0] for s in students if s["id"] == selected),
+                "estudiante"
+            )
+            saludo = f"Hola, {nombre_corto} 👋 ¿En qué puedo ayudarte hoy?"
+        else:
+            saludo = "¿En qué puedo ayudarte hoy? 👋"
+
+        st.markdown(
+            f"""
+            <div style="text-align:center; padding: 48px 24px 32px; max-width:520px; margin:0 auto;">
+              <div style="width:64px; height:64px; border-radius:50%; background:var(--primary);
+                          color:#fff; font-size:28px; display:flex; align-items:center;
+                          justify-content:center; margin:0 auto 20px auto;">🎓</div>
+              <div style="font-size:20px; font-weight:600; color:var(--text); margin-bottom:8px;">
+                {saludo}
+              </div>
+              <div style="font-size:14px; color:var(--text-muted); line-height:1.5;">
+                Preguntame sobre normativas, becas, asignaturas u orientacion academica.
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Chips de sugerencias clicables (implementacion segura via session_state)
+        sugerencias = [
+            "¿Que optativas me recomiendas para 4o?",
+            "¿Como solicito una beca?",
+            "¿Cual es la normativa de permanencia?",
+            "¿Que asignaturas tengo pendientes?",
+        ]
+        cols = st.columns(2)
+        for i, sug in enumerate(sugerencias):
+            with cols[i % 2]:
+                if st.button(sug, key=f"chip_{i}", use_container_width=True):
+                    st.session_state.messages.append({"role": "user", "content": sug})
+                    st.session_state.pending_message = sug
+                    st.session_state.processing = True
+                    st.rerun()
+
     for msg in mensajes:
-        role = msg.get("role")
+        msg_role = msg.get("role")
         content = msg.get("content", "")
         sources = msg.get("sources", [])
         confidence = msg.get("confidence", 1.0)
 
-        if role == "user":
+        if msg_role == "user":
             st.markdown(
                 '<p style="font-size:12px; color:var(--text-muted); margin:8px 0 2px 0; text-align:right;">👤 Tú</p>'
                 f'<div class="burbuja-usuario">{content}</div>',
                 unsafe_allow_html=True,
             )
-        elif role == "assistant":
+        elif msg_role == "assistant":
             st.markdown(
-                '<p style="font-size:12px; color:var(--text-muted); margin:8px 0 2px 0;">🎓 Asistente Univ</p>'
+                '<p style="font-size:12px; color:var(--text-muted); margin:8px 0 2px 0;">🎓 Asistente de Orientacion Universitaria</p>'
                 f'<div class="burbuja-asistente">{content}</div>',
                 unsafe_allow_html=True,
             )
+            # B3.3 — Fuentes con estilo pills
             if sources and len(sources) > 0:
-                with st.expander(f"📎 Fuentes consultadas ({len(sources)})"):
-                    st.markdown(
-                        f'<div class="fuentes-box">{format_sources_html(sources)}</div>',
-                        unsafe_allow_html=True,
-                    )
+                pills_html = "".join(
+                    f'<span style="display:inline-block; background:var(--bg); '
+                    f'border:1px solid var(--border); border-radius:12px; '
+                    f'padding:3px 10px; font-size:11px; color:var(--text-muted); '
+                    f'margin:3px 3px 0 0;">📄 {s}</span>'
+                    for s in sources
+                )
+                st.markdown(
+                    f'<div style="margin-top:6px;">{pills_html}</div>',
+                    unsafe_allow_html=True,
+                )
             if confidence < 0.6:
                 st.markdown(
                     '<p style="font-size:12px; color:var(--text-muted);">'
