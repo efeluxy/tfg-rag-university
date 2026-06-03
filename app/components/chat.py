@@ -86,7 +86,7 @@ def render_chat() -> None:
         subtitulo = ""
 
     st.markdown(
-        "<h3 style='color:#FFFFFF; margin-bottom:4px;'>"
+        "<h3 style='color:#000000; margin-bottom:4px;'>"
         "Asistente de Orientacion Universitaria</h3>",
         unsafe_allow_html=True,
     )
@@ -104,13 +104,13 @@ def render_chat() -> None:
 
         if role == "user":
             st.markdown(
-                '<p style="font-size:0.78rem; color:#FFFFFF; margin:8px 0 2px 0;">👤 Tú</p>'
+                '<p style="font-size:0.78rem; color:#000000; margin:8px 0 2px 0;">👤 Tú</p>'
                 f'<div class="burbuja-usuario">{content}</div>',
                 unsafe_allow_html=True,
             )
         elif role == "assistant":
             st.markdown(
-                '<p style="font-size:0.78rem; color:#FFFFFF; margin:8px 0 2px 0;">🎓 Asistente Univ</p>'
+                '<p style="font-size:0.78rem; color:#000000; margin:8px 0 2px 0;">🎓 Asistente Univ</p>'
                 f'<div class="burbuja-asistente">{content}</div>',
                 unsafe_allow_html=True,
             )
@@ -122,7 +122,7 @@ def render_chat() -> None:
                     )
             if confidence < 0.6:
                 st.markdown(
-                    '<p style="font-size:0.8rem; color:#FFFFFF;">'
+                    '<p style="font-size:0.8rem; color:#000000;">'
                     "ℹ️ Respuesta basada en conocimiento general</p>",
                     unsafe_allow_html=True,
                 )
@@ -135,7 +135,7 @@ def render_chat() -> None:
               <div class="typing-dot"></div>
               <div class="typing-dot"></div>
               <div class="typing-dot"></div>
-              <span style="margin-left:8px;color:#FFFFFF">El asistente está procesando...</span>
+              <span style="margin-left:8px;color:#000000">El asistente está procesando...</span>
             </div>
             """,
             unsafe_allow_html=True,

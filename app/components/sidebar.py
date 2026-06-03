@@ -243,7 +243,7 @@ def render_sidebar():
     st.markdown(
         """
         <div style="text-align:center; padding: 10px 0 6px 0;">
-          <h2 style="color:#FFFFFF; font-size:1.4rem; margin:0;">Universidad Demo</h2>
+          <h2 style="color:#000000; font-size:1.4rem; margin:0;">Universidad Demo</h2>
           <p style="color:var(--text-secondary); font-size:0.85rem; margin:4px 0 0 0;">Asistente de Orientacion</p>
         </div>
         """,
