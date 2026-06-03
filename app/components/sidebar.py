@@ -93,11 +93,16 @@ def render_student_header(student: dict | None, role: str) -> None:
     line3_parts = [p for p in (year_label, gpa_label, status_label) if p]
     line3 = " - ".join(line3_parts)
 
+    # Iniciales para el avatar
+    parts = name.split()
+    initials = (parts[0][0] + parts[-1][0]).upper() if len(parts) >= 2 else name[:2].upper()
+
     st.markdown(
         f"""
         <div class="student-header">
+            <div class="avatar-circle">{initials}</div>
             <div class="student-header-name">{name}</div>
-            <div class="student-header-sub">{sid} - {degree}</div>
+            <div class="student-header-sub">{sid} · {degree}</div>
             <div class="student-header-meta">{line3}</div>
         </div>
         """,
@@ -242,14 +247,13 @@ def render_sidebar():
     # 1. CABECERA
     st.markdown(
         """
-        <div style="text-align:center; padding: 10px 0 6px 0;">
-          <h2 style="color:#000000; font-size:1.4rem; margin:0;">Universidad Demo</h2>
-          <p style="color:var(--text-secondary); font-size:0.85rem; margin:4px 0 0 0;">Asistente de Orientacion</p>
+        <div style="padding: 16px 0 12px 0; border-bottom: 1px solid var(--border); margin-bottom: 16px;">
+          <div style="font-size:1.4rem; font-weight:700; color:var(--text); margin:0; line-height:1.2;">🎓 Universidad Demo</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Asistente de Orientacion IA</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
-    st.markdown("---")
 
     # 2. HEADER DEL ALUMNO (adaptado al rol)
     if role == "guest":
@@ -341,27 +345,14 @@ def render_sidebar():
             st.rerun()
 
     # 5. INFORMACION DEL SISTEMA
-    st.markdown("---")
     st.markdown(
         """
-        <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; line-height:1.8;">
-          Azure AI Search conectado<br>
-          v1.0 -- TFG 2026<br>
-          94 chunks indexados
+        <div class="system-info">
+          Azure AI Search conectado &middot; v1.0 TFG 2026 &middot; 94 chunks
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        """
-        <div style="font-size:0.70rem; color:var(--text-muted); text-align:center;
-                    line-height:1.5; padding:8px; margin-top:10px;
-                    border-top:1px solid var(--border);">
-          <b>Aviso de seguridad:</b><br>
-          Si el sistema detecta una situacion de crisis emocional grave,
-          se generara un aviso automatico al Servicio de Orientacion
-          Psicologica de la Universidad para que puedan contactar contigo
-          cuanto antes.
+        <div class="security-notice">
+          <b>Aviso de seguridad:</b> Si el sistema detecta una crisis emocional grave,
+          se generara un aviso automatico al Servicio de Orientacion Psicologica.
         </div>
         """,
         unsafe_allow_html=True,
