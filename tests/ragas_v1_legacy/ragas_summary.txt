@@ -1,0 +1,39 @@
+============================================================
+RESUMEN EVALUACION RAGAS — Asistente Universitario TFG
+============================================================
+
+Fecha:          2026-06-04 02:32:21
+RAGAS version:  0.1.21
+Muestras:       30
+LLM juez:       gpt-4o
+Tiempo:         768.3 s
+
+------------------------------------------------------------
+METRICAS (media sobre 30 muestras)
+------------------------------------------------------------
+  faithfulness              0.5118
+  answer_relevancy          0.4755
+  context_precision         0.3756
+  context_recall            0.2730
+
+------------------------------------------------------------
+VEREDICTO FAITHFULNESS > 0.80: FAIL (< 0.80)
+------------------------------------------------------------
+
+ANALISIS (faithfulness <= 0.80):
+  Causa probable: G02 — respuestas correctas pero poco ancladas
+  en chunks dispersos del corpus. El generador sintetiza informacion
+  de varias fuentes pero no siempre cita literalmente el chunk.
+
+5 PEORES MUESTRAS (faithfulness):
+  - [0.000] Cuantos creditos tiene la asignatura de Aprendizaje Automati
+  - [0.071] Cual es el sistema de evaluacion de Trabajo Fin de Grado en 
+  - [0.100] Que es la prueba especifica de acceso y como afecta a la not
+  - [0.100] Como puedo obtener el titulo universitario una vez finalizad
+  - [0.111] Cuales son los pasos para solicitar una beca de colaboracion
+
+PROPUESTAS DE MEJORA:
+  1. Enriquecer corpus con documentos mas especificos y detallados.
+  2. Revisar chunking: reducir overlap para evitar fragmentacion.
+  3. Ajustar prompt del generador para exigir mas anclaje en chunks.
+  4. Aumentar top_k de recuperacion para dar mas contexto al LLM.

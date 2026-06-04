@@ -1,0 +1,46 @@
+=================================================================
+RESUMEN EVALUACION RAGAS v2 — Asistente Universitario TFG
+=================================================================
+
+Fecha:          2026-06-04 22:17:40
+RAGAS version:  0.2.6
+Muestras:       30
+LLM juez:       gpt-4o
+Tiempo:         599.4 s
+GT corregidos:  indices [0, 3, 5, 6, 21]
+
+-----------------------------------------------------------------
+CAMBIOS RESPECTO A v1
+-----------------------------------------------------------------
+  • RAGAS version: 0.1.21 -> 0.2.6
+  • column_map aplicado: question/answer/contexts/ground_truth -> user_input/response/retrieved_contexts/reference
+  • AZURE_OPENAI_DEPLOYMENT_NAME (var correcta del .env) usada como LLM juez
+  • max_workers: 4 -> 2 (menos errores 429)
+  • GT correcciones en indices [0, 3, 5, 6, 21] (ver gt_corrections_applied)
+
+-----------------------------------------------------------------
+METRICA                    v1 (0.1.21)  v2 (0.2.6)   Delta  Objetivo  Veredicto
+-----------------------------------------------------------------
+  faithfulness                  0.5118      0.5521 +0.0403      0.85  FAIL (objetivo 0.85)
+  answer_relevancy              0.4755      0.5104 +0.0349      0.80  FAIL (objetivo 0.80)
+  context_precision             0.3756      0.2956 -0.0800      0.75  FAIL (objetivo 0.75)
+  context_recall                0.2730      0.3111 +0.0381      0.70  FAIL (objetivo 0.70)
+
+-----------------------------------------------------------------
+CORRECCIONES DE GROUND_TRUTH APLICADAS
+-----------------------------------------------------------------
+  [00] Corpus dice 'Consejo Academico', no 'Consejo de Departamento'. Corpus dice 5 convocatorias maximas (4 ordinarias + 1 extraordinaria), no 6.
+  [03] El corpus dice 50%/60%/65% segun el ano, no '12 creditos por curso'. Los minimos reales son 27/33/39 ECTS sobre 60 ECTS de matricula estandar.
+  [05] Corpus dice 'sexta semana lectiva', no 'primer mes'. Corpus dice explicitamente que la anulacion NO consume convocatoria (Art. 3.1: 'sin que ello conste en el expediente como convocatoria consumida'). El GT original afirmaba lo contrario.
+  [06] Corpus dice 42 ECTS de optativas, no 36. Corpus dice 186 ECTS obligatorias en total; el desglose 'formacion basica + obligatorias de grado + practicas externas' del GT no aparece en el corpus y los numeros no cuadran.
+  [21] Corpus dice 5 dias habiles para la reclamacion (no 10). El organo receptor es 'Comision de Evaluacion del Grado' (no 'el departamento').
+
+-----------------------------------------------------------------
+5 PEORES MUESTRAS (faithfulness)
+-----------------------------------------------------------------
+  [0.000] Cuantos creditos tiene la asignatura de Aprendizaje Automa
+  [0.083] Cuales son los pasos para solicitar una beca de colaboraci
+  [0.100] Que es la prueba especifica de acceso y como afecta a la n
+  [0.182] Puede un alumno cambiar de grupo de practicas una vez come
+  [0.190] Como se tramita el reconocimiento de creditos por experien
+
