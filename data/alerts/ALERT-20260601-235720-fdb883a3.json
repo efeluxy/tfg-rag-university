@@ -1,0 +1,40 @@
+{
+  "alert_id": "ALERT-20260601-235720-fdb883a3",
+  "timestamp": "2026-06-01T23:57:20.249711Z",
+  "severity": "CRITICAL",
+  "detected_tier": 3,
+  "tier_label": "crisis_grave",
+  "rationale": "crisis_grave",
+  "trigger_message": "Hacerme dano me parece la salida",
+  "session_id": "8a701cb1-8c2b-46e6-97ee-2143f56f62cc",
+  "student": {
+    "user_id": null,
+    "identified": false,
+    "name": null,
+    "email": null,
+    "degree": null,
+    "year": null,
+    "academic_status": null,
+    "gpa": null
+  },
+  "conversation_context": [],
+  "recommended_action": "Contacto inmediato del Servicio de Orientacion Psicologica con el alumno. Si el alumno esta identificado, llamada telefonica directa al telefono de contacto del expediente. Citacion urgente en menos de 24 horas. Si el alumno NO esta identificado, monitorizar futuras interacciones del mismo session_id.",
+  "alert_destination": {
+    "primary": "psicologia@universidad.es",
+    "phone": "900 456 789",
+    "emergency_fallback": "024"
+  },
+  "system_metadata": {
+    "graph_version": "1.0",
+    "alert_module_version": "1.0",
+    "channels_used": [
+      "log",
+      "json_file"
+    ],
+    "channels_pending": [
+      "email",
+      "sms",
+      "phone_call"
+    ]
+  }
+}
