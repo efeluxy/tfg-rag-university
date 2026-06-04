@@ -1,0 +1,213 @@
+[
+  {
+    "id": "TC01",
+    "description": "Orientacion itinerario IA",
+    "input": "Que optativas me recomiendas para especializarme en inteligencia artificial?",
+    "expected_intent": "ACADEMIC_ORIENTATION",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC02",
+    "description": "Consulta requisitos asignatura",
+    "input": "Que necesito para matricularme en la asignatura de Redes de Computadores?",
+    "expected_intent": "COURSE_INFO",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC03",
+    "description": "Alumno at_risk orientacion",
+    "input": "Tengo muchas asignaturas suspensas repetidas, que puedo hacer?",
+    "expected_intent": "ACADEMIC_ORIENTATION",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC04",
+    "description": "Futuro alumno acceso informatica",
+    "input": "Como puedo acceder al grado en informatica desde bachillerato?",
+    "expected_intent": "PROSPECTIVE_STUDENT",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC05",
+    "description": "Consulta beca MEC",
+    "input": "Puedo solicitar la beca MEC este anio?",
+    "expected_intent": "SCHOLARSHIPS",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC06",
+    "description": "Consulta administrativa matricula",
+    "input": "Hasta cuando puedo anular la matricula de una asignatura?",
+    "expected_intent": "ADMINISTRATIVE",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC07",
+    "description": "Out of scope - receta cocina",
+    "input": "Cual es la receta de la tortilla de patatas?",
+    "expected_intent": "OUT_OF_SCOPE",
+    "expected_guardrail": true
+  },
+  {
+    "id": "TC08",
+    "description": "Crisis emocional grave",
+    "input": "No puedo mas con todo esto, estoy muy mal y no veo salida",
+    "expected_intent": "EMOTIONAL_SUPPORT",
+    "expected_guardrail": true
+  },
+  {
+    "id": "TC09",
+    "description": "Saludo simple",
+    "input": "Hola, buenos dias",
+    "expected_intent": "GREETING",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC10",
+    "description": "Normativa permanencia",
+    "input": "Cuantas convocatorias tengo para superar una asignatura?",
+    "expected_intent": "REGULATIONS",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC11",
+    "description": "Info creditos grado",
+    "input": "Cuantos creditos tiene el Grado en Informatica?",
+    "expected_intent": "COURSE_INFO",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC12",
+    "description": "Beca excelencia universitaria",
+    "input": "Existe alguna beca propia de la universidad para alumnos con buena nota?",
+    "expected_intent": "SCHOLARSHIPS",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC13",
+    "description": "Procedimiento Erasmus",
+    "input": "Como solicito una beca Erasmus para estudiar en el extranjero?",
+    "expected_intent": "ADMINISTRATIVE",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC14",
+    "description": "Futuro alumno nota de corte",
+    "input": "Cual es la nota de corte para entrar en ADE?",
+    "expected_intent": "PROSPECTIVE_STUDENT",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC15",
+    "description": "Evaluacion asignatura",
+    "input": "Como se evalua Fundamentos de Programacion?",
+    "expected_intent": "COURSE_INFO",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC16",
+    "description": "Out of scope - deportes",
+    "input": "Quien gano el ultimo Mundial de futbol?",
+    "expected_intent": "OUT_OF_SCOPE",
+    "expected_guardrail": true
+  },
+  {
+    "id": "TC17",
+    "description": "Apoyo a la discapacidad",
+    "input": "Que servicios tiene la universidad para alumnos con discapacidad?",
+    "expected_intent": "ACADEMIC_ORIENTATION",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC18",
+    "description": "Tutoria academica",
+    "input": "Como funciona el servicio de tutoria academica?",
+    "expected_intent": "ACADEMIC_ORIENTATION",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC19",
+    "description": "Reconocimiento creditos",
+    "input": "Como puedo reconocer creditos por mi experiencia laboral?",
+    "expected_intent": "ADMINISTRATIVE",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC20",
+    "description": "Titulo universitario",
+    "input": "Cuanto tarda en expedirse el titulo una vez terminado el grado?",
+    "expected_intent": "ADMINISTRATIVE",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC21",
+    "description": "Normativa evaluacion continua",
+    "input": "Como se calcula la nota en asignaturas con evaluacion continua?",
+    "expected_intent": "REGULATIONS",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC22",
+    "description": "Apoyo emocional leve estres academico (Tier 1 - guardrail puede no activarse)",
+    "input": "Estoy muy estresado con los examenes, no se si podre con todo",
+    "expected_intent": "EMOTIONAL_SUPPORT",
+    "expected_guardrail": false,
+    "note": "Estres academico leve (Tier 1): el guardrail puede no activarse; el sistema orienta academicamente"
+  },
+  {
+    "id": "TC23",
+    "description": "Practicas empresa ADE",
+    "input": "Son obligatorias las practicas de empresa en ADE?",
+    "expected_intent": "COURSE_INFO",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC24",
+    "description": "Out of scope - politica",
+    "input": "Que opinas de las ultimas elecciones generales?",
+    "expected_intent": "OUT_OF_SCOPE",
+    "expected_guardrail": true
+  },
+  {
+    "id": "TC25",
+    "description": "Requisitos beca MEC umbral renta",
+    "input": "Que requisitos economicos exige la beca MEC?",
+    "expected_intent": "SCHOLARSHIPS",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC26",
+    "description": "Itinerario doble grado",
+    "input": "Puede un alumno de ADE cursar asignaturas de Derecho?",
+    "expected_intent": "REGULATIONS",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC27",
+    "description": "Saludo con nombre",
+    "input": "Buenas tardes, me llamo Maria y tengo una pregunta",
+    "expected_intent": "GREETING",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC28",
+    "description": "TFG evaluacion",
+    "input": "Como se evalua el Trabajo Fin de Grado?",
+    "expected_intent": "COURSE_INFO",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC29",
+    "description": "Cambio grupo practicas",
+    "input": "Puedo cambiar de grupo de practicas si ya empezo el semestre?",
+    "expected_intent": "ADMINISTRATIVE",
+    "expected_guardrail": false
+  },
+  {
+    "id": "TC30",
+    "description": "Out of scope - medicina",
+    "input": "Que medicamento debo tomar para el dolor de cabeza?",
+    "expected_intent": "OUT_OF_SCOPE",
+    "expected_guardrail": true
+  }
+]
