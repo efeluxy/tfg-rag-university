@@ -1,0 +1,821 @@
+/* ============================================================
+   UNIVERSIDAD DEMO — Design System SaaS Moderno
+   Streamlit 1.43  |  rama: rediseno-ui
+   ============================================================ */
+
+/* ── Fuente ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+/* ── Ocultar chrome de Streamlit ── */
+#MainMenu { visibility: hidden; }
+footer    { visibility: hidden; }
+header    { visibility: hidden; }
+
+/* ── Tipografía global ── */
+html, body, [class*="css"], .stApp {
+    font-family: 'Inter', 'Lato', sans-serif !important;
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+/* ── Contenedor principal ── */
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > .main,
+.main .block-container,
+[data-testid="stMainBlockContainer"] {
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+    max-width: 1840px !important;
+    padding-top: 1.5rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+[data-testid="stHeader"],
+[data-testid="stToolbar"] {
+    background-color: var(--bg) !important;
+}
+
+/* ── Texto global ── */
+.stApp, .stApp p, .stApp span, .stApp div, .stApp label,
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6,
+[data-testid="stMarkdownContainer"],
+[data-testid="stMarkdownContainer"] * {
+    color: var(--text) !important;
+}
+
+/* ── Tipografía jerárquica ── */
+h1, .stApp h1 { font-size: 34px !important; font-weight: 700 !important; line-height: 1.2 !important; }
+h2, .stApp h2 { font-size: 20px !important; font-weight: 600 !important; line-height: 1.3 !important; }
+h3, .stApp h3 { font-size: 16px !important; font-weight: 600 !important; }
+p, .stApp p   { font-size: 14px !important; font-weight: 400 !important; line-height: 1.6 !important; }
+
+label[data-testid="stWidgetLabel"],
+label[data-testid="stWidgetLabel"] p {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: var(--text-muted) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    margin-bottom: 4px !important;
+}
+
+/* ── Captions ── */
+[data-testid="stCaptionContainer"],
+[data-testid="stCaptionContainer"] * {
+    font-size: 12px !important;
+    color: var(--text-muted) !important;
+}
+
+/* ============================================================
+   SEPARADORES — eliminar líneas negras, usar aire
+   ============================================================ */
+hr,
+[data-testid="stDivider"],
+[data-testid="stMarkdownContainer"] hr {
+    border: none !important;
+    border-top: 1px solid var(--border) !important;
+    margin: 12px 0 !important;
+    background: none !important;
+}
+
+/* ============================================================
+   CARD (clase reutilizable)
+   ============================================================ */
+.card {
+    background: var(--card) !important;
+    border-radius: var(--radius-card, 16px) !important;
+    box-shadow: var(--shadow-card, 0 1px 3px rgba(0,0,0,0.08)) !important;
+    border: 1px solid var(--border) !important;
+    padding: 24px !important;
+    margin-bottom: 16px !important;
+}
+
+/* ── Expanders como cards ── */
+[data-testid="stExpander"],
+details[data-testid="stExpander"] {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+    overflow: hidden !important;
+    margin: 8px 0 !important;
+}
+[data-testid="stExpander"] summary,
+[data-testid="stExpander"] > div:first-child {
+    background: var(--card) !important;
+    color: var(--text) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 12px 16px !important;
+    cursor: pointer !important;
+}
+[data-testid="stExpander"] summary:hover {
+    background: var(--bg) !important;
+}
+[data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+    background: var(--card) !important;
+    padding: 8px 16px 16px !important;
+    border-top: 1px solid var(--border) !important;
+}
+
+/* ============================================================
+   SIDEBAR / COLUMNA IZQUIERDA
+   ============================================================ */
+section[data-testid="stSidebar"] {
+    background-color: var(--card) !important;
+    border-right: 1px solid var(--border) !important;
+}
+section[data-testid="stSidebar"] *,
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] span,
+section[data-testid="stSidebar"] label {
+    color: var(--text) !important;
+}
+
+/* sticky column */
+[data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    align-self: flex-start;
+}
+
+/* ── Avatar de alumno ── */
+.avatar-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    margin: 0 auto 12px auto;
+    letter-spacing: 0.05em;
+}
+
+/* ── Cabecera del alumno (student-header) ── */
+.student-header {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+.student-header-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text) !important;
+    line-height: 1.3;
+}
+.student-header-sub {
+    font-size: 13px;
+    color: var(--text-muted) !important;
+    margin-top: 4px;
+    font-weight: 400;
+}
+.student-header-meta {
+    font-size: 12px;
+    color: var(--text-muted) !important;
+    margin-top: 6px;
+}
+.student-header-empty {
+    color: var(--text-muted) !important;
+    font-style: italic;
+    font-size: 13px;
+    padding: 8px;
+    text-align: center;
+}
+
+/* ── Badges de estado ── */
+.badge-excellent {
+    background: rgba(16,185,129,0.12);
+    color: #059669 !important;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.badge-active {
+    background: rgba(0,120,212,0.10);
+    color: #0078D4 !important;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.badge-at-risk {
+    background: rgba(245,158,11,0.12);
+    color: #D97706 !important;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ── Expediente card ── */
+.expediente-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+.expediente-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text) !important;
+}
+.expediente-stat:last-child {
+    border-bottom: none;
+}
+
+/* ── Barra de progreso ── */
+[data-testid="stProgress"] > div > div {
+    height: 10px !important;
+    border-radius: 5px !important;
+    background: var(--border) !important;
+}
+[data-testid="stProgress"] > div > div > div {
+    background: var(--secondary) !important;
+    border-radius: 5px !important;
+    transition: width 0.4s ease !important;
+}
+
+/* ── Historial académico ── */
+.history-summary {
+    padding: 10px 0;
+    margin-bottom: 8px;
+    color: var(--text) !important;
+    font-weight: 600;
+    font-size: 14px;
+}
+.history-meta {
+    font-size: 12px;
+    color: var(--text-muted) !important;
+    font-weight: 400;
+}
+.history-year {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary) !important;
+    margin: 8px 0 4px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+}
+.history-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 46px 60px;
+    gap: 4px;
+    align-items: center;
+    padding: 5px 4px;
+    font-size: 12px;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+    color: var(--text) !important;
+}
+.history-row:hover {
+    background: var(--bg) !important;
+}
+.history-code {
+    font-family: 'Courier New', monospace;
+    color: var(--text-muted) !important;
+    font-size: 11px;
+}
+.history-name {
+    color: var(--text) !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.history-grade {
+    font-weight: 600;
+    text-align: right;
+}
+.history-row.passed .history-grade { color: var(--success) !important; }
+.history-row.failed  .history-grade { color: var(--warning) !important; }
+.history-status {
+    font-size: 11px;
+    color: var(--text-muted) !important;
+    text-align: right;
+}
+.history-empty {
+    color: var(--text-muted) !important;
+    font-style: italic;
+    font-size: 13px;
+    padding: 8px;
+}
+
+/* ── Info del sistema ── */
+.system-info {
+    font-size: 12px;
+    color: var(--text-muted) !important;
+    text-align: center;
+    line-height: 1.8;
+    padding: 8px 0;
+}
+.security-notice {
+    font-size: 11px;
+    color: var(--text-muted) !important;
+    text-align: center;
+    line-height: 1.5;
+    padding: 8px;
+    margin-top: 8px;
+    border-top: 1px solid var(--border);
+}
+
+/* ============================================================
+   PANTALLA DE LOGIN
+   ============================================================ */
+
+/* Card centrada del login */
+.login-card {
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--card);
+    border-radius: var(--radius-card, 16px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+    padding: 40px 36px 32px;
+}
+.login-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+.login-title {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: var(--text) !important;
+    margin: 8px 0 4px 0;
+    line-height: 1.2;
+}
+.login-subtitle {
+    font-size: 14px !important;
+    color: var(--text-muted) !important;
+    margin: 0;
+    line-height: 1.5;
+}
+.login-footer {
+    font-size: 11px;
+    color: var(--text-muted) !important;
+    text-align: center;
+    line-height: 1.6;
+    padding-top: 12px;
+    margin-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+/* Tabs del login */
+[data-baseweb="tab-list"] {
+    background: transparent !important;
+    border-bottom: 1px solid var(--border) !important;
+    gap: 1.5rem !important;
+    margin-bottom: 20px !important;
+}
+[data-baseweb="tab"] {
+    color: var(--text-muted) !important;
+    background: transparent !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 8px 4px !important;
+    border-bottom: 2px solid transparent !important;
+    transition: color 0.15s ease, border-color 0.15s ease !important;
+}
+[data-baseweb="tab"]:hover {
+    color: var(--text) !important;
+}
+[data-baseweb="tab"][aria-selected="true"] {
+    color: var(--primary) !important;
+    border-bottom-color: var(--primary) !important;
+    font-weight: 600 !important;
+}
+.stTabs [data-baseweb="tab-highlight"],
+.stTabs [data-baseweb="tab-border"] {
+    background-color: var(--primary) !important;
+}
+
+/* ============================================================
+   CHAT
+   ============================================================ */
+
+/* Mensajes del usuario */
+.burbuja-usuario {
+    background: var(--primary) !important;
+    color: #FFFFFF !important;
+    padding: 12px 18px;
+    border-radius: 18px 18px 4px 18px;
+    margin: 4px 0 4px 15%;
+    font-size: 14px;
+    line-height: 1.6;
+    box-shadow: 0 2px 8px rgba(0,120,212,0.20);
+    width: fit-content;
+    margin-left: auto;
+}
+.burbuja-usuario * { color: #FFFFFF !important; }
+
+/* Mensajes del asistente */
+.burbuja-asistente {
+    background: var(--card) !important;
+    color: var(--text) !important;
+    padding: 14px 18px;
+    border-radius: 18px 18px 18px 4px;
+    margin: 4px 15% 4px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 3px solid var(--primary);
+    width: fit-content;
+}
+.burbuja-asistente * { color: var(--text) !important; }
+
+/* Mensajes en st.chat_message */
+[data-testid="stChatMessage"] {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    margin-bottom: 8px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+[data-testid="stChatMessage"] * {
+    color: var(--text) !important;
+    background: transparent !important;
+}
+
+/* Fuentes citadas */
+.fuentes-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted) !important;
+}
+.fuentes-box * { color: var(--text-muted) !important; }
+
+/* Typing indicator */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 18px;
+    background: var(--card);
+    border-radius: 18px 18px 18px 4px;
+    border: 1px solid var(--border);
+    width: fit-content;
+    margin: 4px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.typing-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: typing-bounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
+}
+
+/* Chat input */
+[data-testid="stChatInput"] textarea,
+.stChatInput textarea {
+    background: var(--card) !important;
+    color: var(--text) !important;
+    border: 1.5px solid var(--input-border) !important;
+    border-radius: 24px !important;
+    font-size: 14px !important;
+    padding: 12px 20px !important;
+    caret-color: var(--primary) !important;
+}
+[data-testid="stChatInput"] textarea:focus,
+.stChatInput textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(0,120,212,0.12) !important;
+}
+[data-testid="stChatInput"] textarea::placeholder,
+.stChatInput textarea::placeholder {
+    color: var(--text-muted) !important;
+    font-style: italic !important;
+    opacity: 1 !important;
+}
+[data-testid="stBottom"],
+[data-testid="stBottomBlockContainer"],
+section[data-testid="stChatInputContainer"] {
+    background: var(--bg) !important;
+    max-width: 1840px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+
+/* Botón principal (kind=primary / use_container_width) */
+div[data-testid="stButton"] > button[kind="primary"],
+div[data-testid="stFormSubmitButton"] > button[kind="primary"] {
+    background: var(--primary) !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: var(--radius-btn, 10px) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 10px 20px !important;
+    transition: background 0.2s ease, box-shadow 0.2s ease !important;
+    box-shadow: 0 1px 3px rgba(0,120,212,0.25) !important;
+    cursor: pointer !important;
+}
+div[data-testid="stButton"] > button[kind="primary"]:hover,
+div[data-testid="stFormSubmitButton"] > button[kind="primary"]:hover {
+    background: var(--primary-hover) !important;
+    box-shadow: 0 4px 12px rgba(0,120,212,0.30) !important;
+}
+
+/* Botón secundario */
+div[data-testid="stButton"] > button,
+div[data-testid="stFormSubmitButton"] > button {
+    background: transparent !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-btn, 10px) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    padding: 8px 16px !important;
+    transition: background 0.15s ease, border-color 0.15s ease !important;
+    cursor: pointer !important;
+}
+div[data-testid="stButton"] > button:hover,
+div[data-testid="stFormSubmitButton"] > button:hover {
+    background: var(--bg) !important;
+    border-color: var(--input-border) !important;
+}
+
+/* ============================================================
+   INPUTS Y SELECTBOX
+   ============================================================ */
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea,
+[data-baseweb="input"] input,
+[data-baseweb="textarea"] textarea {
+    background: var(--card) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--input-border) !important;
+    border-radius: var(--radius-btn, 10px) !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    caret-color: var(--primary) !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+[data-testid="stTextInput"] input:focus,
+[data-testid="stTextArea"] textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(0,120,212,0.12) !important;
+    outline: none !important;
+}
+
+/* Ojo contraseña */
+[data-testid="stTextInput"] button,
+[data-baseweb="input"] button {
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-muted) !important;
+}
+[data-testid="stTextInput"] button svg,
+[data-baseweb="input"] button svg,
+[data-baseweb="input"] svg path,
+[data-baseweb="input"] svg circle {
+    fill: var(--text-muted) !important;
+    stroke: var(--text-muted) !important;
+    color: var(--text-muted) !important;
+}
+[data-testid="InputInstructions"],
+div[data-baseweb="input"] + div small {
+    color: var(--text-muted) !important;
+}
+[data-testid="stTextInput"] [data-baseweb="input"],
+[data-baseweb="input"] {
+    background: var(--card) !important;
+    border-color: var(--input-border) !important;
+    border-radius: var(--radius-btn, 10px) !important;
+}
+
+/* Selectbox */
+div[data-baseweb="select"] > div {
+    background: var(--card) !important;
+    color: var(--text) !important;
+    border-color: var(--input-border) !important;
+    border-radius: var(--radius-btn, 10px) !important;
+    font-size: 14px !important;
+}
+div[data-baseweb="select"] input { color: var(--text) !important; }
+div[data-baseweb="popover"] ul {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10) !important;
+}
+div[data-baseweb="popover"] li {
+    color: var(--text) !important;
+    background: var(--card) !important;
+    font-size: 14px !important;
+    padding: 8px 14px !important;
+}
+div[data-baseweb="popover"] li:hover {
+    background: var(--bg) !important;
+}
+
+/* ============================================================
+   SEGMENTED CONTROL
+   ============================================================ */
+[data-testid="stSegmentedControl"],
+div[data-baseweb="segmented-control"] {
+    margin-bottom: 12px !important;
+}
+[data-testid="stSegmentedControl"] button,
+div[data-baseweb="segmented-control"] button,
+div[role="radiogroup"] button {
+    background: transparent !important;
+    color: var(--text) !important;
+    border: 1px solid var(--input-border) !important;
+    border-radius: 8px !important;
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    transition: all 0.15s ease !important;
+    cursor: pointer !important;
+}
+[data-testid="stSegmentedControl"] button:not([aria-checked="true"]):hover {
+    background: var(--bg) !important;
+    border-color: var(--text-muted) !important;
+}
+[data-testid="stSegmentedControl"] button[aria-checked="true"],
+[data-testid="stSegmentedControl"] button[aria-pressed="true"],
+div[data-baseweb="segmented-control"] button[aria-checked="true"],
+div[role="radiogroup"] button[aria-checked="true"] {
+    background: var(--surface-active) !important;
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    font-weight: 600 !important;
+    cursor: default !important;
+}
+
+/* ============================================================
+   RADIO BUTTONS
+   ============================================================ */
+[data-testid="stRadio"] label,
+[data-testid="stRadio"] p { color: var(--text) !important; }
+[data-baseweb="radio"] div { background: transparent !important; }
+
+/* ============================================================
+   ALERTAS
+   ============================================================ */
+[data-testid="stAlert"] {
+    background: var(--info-bg) !important;
+    border: 1px solid var(--info-border) !important;
+    border-radius: 10px !important;
+    color: var(--text) !important;
+}
+[data-testid="stAlert"] p,
+[data-testid="stAlert"] span { color: var(--text) !important; }
+
+/* ============================================================
+   MODAL (st.dialog)
+   ============================================================ */
+[data-testid="stModal"] > div,
+div[role="dialog"] {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+}
+[data-testid="stModal"] *,
+div[role="dialog"] * { color: var(--text) !important; }
+
+/* ============================================================
+   SCROLLBARS
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1280px) {
+    .main .block-container,
+    [data-testid="stMainBlockContainer"] {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+@media (max-width: 640px) {
+    .main .block-container,
+    [data-testid="stMainBlockContainer"] {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    .burbuja-usuario { margin-left: 5% !important; }
+    .burbuja-asistente { margin-right: 5% !important; }
+}
+
+/* ============================================================
+   BANNER DE COOKIES/PRIVACIDAD
+   ============================================================ */
+.main .block-container.privacy-mode {
+    max-width: 880px !important;
+    margin-top: 10vh !important;
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 16px !important;
+    padding: 2rem 2.5rem !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10) !important;
+}
+.privacy-banner-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: var(--text) !important;
+    margin-bottom: 8px !important;
+}
+.privacy-banner-text {
+    font-size: 13px !important;
+    color: var(--text) !important;
+    line-height: 1.6 !important;
+    margin-bottom: 8px !important;
+}
+.privacy-banner-text strong { font-weight: 600 !important; }
+.privacy-banner-links {
+    font-size: 12px !important;
+    color: var(--text-muted) !important;
+    margin-bottom: 16px !important;
+}
+.privacy-banner-links strong {
+    color: var(--text) !important;
+    font-weight: 600 !important;
+}
+
+/* ============================================================
+   JERARQUÍA TIPOGRÁFICA CSS (complementa inject_theme_css)
+   ============================================================ */
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2 {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: var(--text) !important;
+}
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] span {
+    font-size: 13px !important;
+    color: var(--text) !important;
+}
+section[data-testid="stSidebar"] label[data-testid="stWidgetLabel"],
+section[data-testid="stSidebar"] label[data-testid="stWidgetLabel"] p {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    color: var(--text-muted) !important;
+}
+
+/* ============================================================
+   BOTÓN CERRAR SESIÓN (al final — mayor especificidad de cascada)
+   ============================================================ */
+div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button {
+    background: transparent !important;
+    color: var(--error) !important;
+    border: 1px solid var(--error) !important;
+    border-radius: var(--radius-btn, 10px) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 8px 16px !important;
+    transition: all 0.2s ease !important;
+    margin-top: 12px !important;
+    cursor: pointer !important;
+}
+div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:hover {
+    background: rgba(239,68,68,0.08) !important;
+    border-color: var(--error) !important;
+    color: var(--error) !important;
+}
+div[data-testid="stMarkdown"]:has(> #logout-sidebar-anchor) + div[data-testid="stButton"] > button:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.18) !important;
+}
