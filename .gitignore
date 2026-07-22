@@ -1,5 +1,15 @@
 # Variables de entorno (NUNCA subir al repositorio)
 .env
+*.env
+!.env.example
+
+# Claves y certificados (NUNCA subir)
+*.key
+*.pem
+
+# Backups
+*.bak
+backups/
 
 # Python
 __pycache__/
