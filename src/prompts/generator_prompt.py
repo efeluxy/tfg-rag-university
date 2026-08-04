@@ -316,8 +316,17 @@ def format_student_context(student_record: dict | None) -> str:
     ]
     pending = student_record.get("pending_subjects", [])
     if pending:
-        names = [s.get("subject_name", "") for s in pending[:3]]
-        lines.append(f"Asignaturas pendientes: {', '.join(names)}")
+        # F3: incluir TODAS las pendientes (sin truncar) con codigo y creditos,
+        # una linea por asignatura, para que el Generador disponga del detalle.
+        lines.append(f"Asignaturas pendientes ({len(pending)}):")
+        for s in pending:
+            code = s.get("code", "")
+            name = s.get("name", "")
+            credits = s.get("credits")
+            if credits is not None:
+                lines.append(f"  - {code} {name} ({credits} creditos)")
+            else:
+                lines.append(f"  - {code} {name}")
     scholarships = student_record.get("scholarships", [])
     active = [s for s in scholarships if s.get("status") == "active"]
     if active:

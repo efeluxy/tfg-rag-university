@@ -38,7 +38,11 @@ _ATTEMPTS_KEYWORDS = re.compile(
 )
 _GRADES_KEYWORDS = re.compile(
     r"nota|calificacion|calificación|puntuacion|puntuación|saque|saco|"
-    r"expediente|media|promedio|que tal voy|como voy",
+    r"expediente|media|promedio|que tal voy|como voy|"
+    # F3: consultas de asignaturas pendientes/suspensas deben cargar el detalle.
+    # Los stems cubren plural/variantes: "pendiente" -> tambien "pendientes",
+    # "suspensa" -> "suspensas", "me falta" -> "me faltan".
+    r"pendiente|suspensa|me falta|que me quedan",
     re.IGNORECASE,
 )
 _FULL_RECORD_KEYWORDS = re.compile(

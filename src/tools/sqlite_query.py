@@ -426,7 +426,12 @@ def get_full_student_record(student_id: str) -> dict:
             if "error" not in s
         ],
         "pending_subjects": [
-            {"code": s["subject_code"], "name": s["subject_name"], "status": s["status"]}
+            {
+                "code": s["subject_code"],
+                "name": s["subject_name"],
+                "credits": s.get("credits"),
+                "status": s["status"],
+            }
             for s in pending_subjects
             if "error" not in s
         ],
