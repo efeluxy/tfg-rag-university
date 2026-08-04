@@ -59,3 +59,43 @@ def test_idempotencia_general_en_todos_los_casos():
     for texto in ejemplos:
         una = normalize_latex(texto)
         assert una == normalize_latex(una), f"No idempotente: {texto!r}"
+
+
+# --- Tests para identificadores snake_case (fix at_risk) ----------------------
+
+
+def test_snake_case_at_risk_intacto():
+    """'at_risk' se devuelve literal, sin $...$ y sin subindice."""
+    out = normalize_latex("estado at_risk")
+    assert "at_risk" in out
+    assert "$" not in out
+
+
+def test_snake_case_student_id_intacto():
+    """'student_id' se devuelve intacto como texto plano."""
+    out = normalize_latex("campo student_id del expediente")
+    assert "student_id" in out
+    assert "$" not in out
+
+
+def test_subindice_con_llaves_se_envuelve():
+    """x_{i} (con llaves) se sigue tratando como subindice correctamente."""
+    out = normalize_latex("x_{i}")
+    assert "$x_{i}$" == out
+
+
+def test_frac_suelto_se_sigue_envolviendo():
+    """\\frac{a}{b} suelto se sigue envolviendo en $...$."""
+    out = normalize_latex("\\frac{a}{b}")
+    assert out == "$\\frac{a}{b}$"
+
+
+def test_idempotencia_mezcla_snake_case_y_formula():
+    """Idempotencia sobre texto que mezcla at_risk y \\frac{a}{b}."""
+    texto = "estado at_risk con \\frac{a}{b}"
+    una = normalize_latex(texto)
+    dos = normalize_latex(una)
+    assert una == dos
+    assert "at_risk" in una
+    assert "$" not in una.split("at_risk")[0].split()[-1] if una.split("at_risk")[0] else True
+    assert "$\\frac{a}{b}$" in una
