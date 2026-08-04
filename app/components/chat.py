@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from src.graph.state import get_initial_state
 from src.utils.conversation import get_recent_history
 from app.components.sources_panel import format_sources_html
+from app.utils.latex import normalize_latex
 
 logger = logging.getLogger(__name__)
 
@@ -156,9 +157,13 @@ def render_chat() -> None:
                 unsafe_allow_html=True,
             )
         elif msg_role == "assistant":
+            # Normalizar la presentacion LaTeX SOLO en los mensajes del asistente
+            # (los del usuario se dejan intactos). El contenido guardado en
+            # session_state no se modifica; la normalizacion es solo de render.
+            content_render = normalize_latex(content)
             st.markdown(
                 '<p style="font-size:12px; color:var(--text-muted); margin:8px 0 2px 0;">🎓 Asistente de Orientacion Universitaria</p>'
-                f'<div class="burbuja-asistente">{content}</div>',
+                f'<div class="burbuja-asistente">{content_render}</div>',
                 unsafe_allow_html=True,
             )
             # B3.3 — Fuentes con estilo pills
