@@ -3,34 +3,19 @@
 
 ```mermaid
 flowchart TD
-    START([__start__]) --> ROUTER
+    START(["__start__"]) --> ROUTER
 
-    ROUTER["`**Router**
-    Clasifica intent
-    Extrae key_points
-    Detecta si necesita expediente`"]
+    ROUTER["<b>Router</b><br/>Clasifica intent<br/>Extrae key_points<br/>Detecta si necesita expediente"]
 
-    GUARDRAIL["`**Guardrail**
-    Evalúa seguridad
-    Detecta crisis emocional
-    Bloquea OUT_OF_SCOPE`"]
+    GUARDRAIL["<b>Guardrail</b><br/>Evalúa seguridad temática<br/>Clasifica nivel emocional 0-3<br/>Bloquea OUT_OF_SCOPE"]
 
-    RETRIEVER["`**Retriever**
-    Genera queries optimizadas
-    Búsqueda híbrida Azure AI Search
-    Devuelve chunks con metadatos`"]
+    RETRIEVER["<b>Retriever</b><br/>Genera queries optimizadas<br/>Búsqueda híbrida Azure AI Search<br/>Devuelve chunks con metadatos"]
 
-    STUDENT_DATA["`**Student Data**
-    Consulta SQLite
-    Carga expediente completo
-    Solo si user_id presente`"]
+    STUDENT_DATA["<b>Student Data</b><br/>Verifica permisos por rol<br/>Consulta SQLite<br/>Sin llamada al LLM"]
 
-    GENERATOR["`**Generator**
-    Sintetiza State completo
-    Genera respuesta con GPT-4o
-    Cita fuentes documentales`"]
+    GENERATOR["<b>Generator</b><br/>Sintetiza el State completo<br/>Genera respuesta con GPT-4o<br/>Cita fuentes documentales"]
 
-    END_NODE([__end__])
+    END_NODE(["__end__"])
 
     ROUTER -->|siempre| GUARDRAIL
 
@@ -42,14 +27,6 @@ flowchart TD
 
     STUDENT_DATA --> GENERATOR
     GENERATOR --> END_NODE
-
-    style ROUTER       fill:#2E75B6,color:#fff,stroke:#1F4E8A
-    style GUARDRAIL    fill:#C55A11,color:#fff,stroke:#843D0C
-    style RETRIEVER    fill:#2E75B6,color:#fff,stroke:#1F4E8A
-    style STUDENT_DATA fill:#7030A0,color:#fff,stroke:#4B1D6B
-    style GENERATOR    fill:#375623,color:#fff,stroke:#233B17
-    style START        fill:#1F4E8A,color:#fff,stroke:#1F4E8A
-    style END_NODE     fill:#1F4E8A,color:#fff,stroke:#1F4E8A
 ```
 
 ## Descripción del flujo

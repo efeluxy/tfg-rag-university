@@ -3,19 +3,20 @@
 
 ```mermaid
 flowchart TD
-    A[data/corpus/\n19 archivos .md] --> B[index_documents.py]
-    B --> C{Chunking\ntiktoken\n512 tokens / 50 overlap}
-    C --> D[Extracción\nde metadatos\ntitle, section, category...]
-    D --> E[Azure OpenAI\ntext-embedding-3-large\ndim=3072]
-    E --> F[(Azure AI Search\nÍndice: university-corpus\nBúsqueda híbrida)]
+    A[data/corpus/<br/>22 archivos .md<br/>20.232 palabras] --> B[index_documents.py]
+    B --> C{Chunking<br/>tiktoken cl100k_base<br/>512 tokens / 50 overlap}
+    C --> D[Extracción de metadatos<br/>title, section, category,<br/>source_file, degree_relevance]
+    D --> E[Azure OpenAI<br/>text-embedding-3-large<br/>dim=3072]
+    E --> F[(Azure AI Search<br/>university-corpus<br/>94 chunks · HNSW coseno)]
 
-    G[Usuario hace\npregunta] --> H[AzureSearchTool\nsrc/tools/azure_search.py]
-    H --> I[Generar embedding\nde la query]
-    I --> J{Búsqueda híbrida\nVectorial + Semántica}
-    F --> J
-    J --> K[Top-K chunks\ncon metadatos y score]
-    K --> L[Agente Retriever\nsrc/agents/retriever.py]
-    L --> M[retrieved_docs\nen el State]
+    G([Usuario hace<br/>pregunta]) --> H[Agente Retriever<br/>retriever.py]
+    H --> I[Expansión con sinónimos<br/>synonyms.py]
+    I --> J[AzureSearchTool<br/>azure_search.py]
+    J --> K[Generar embedding<br/>de la query]
+    K --> L{Búsqueda híbrida<br/>Vectorial + Semántica}
+    F --> L
+    L --> M[Top-K chunks con<br/>metadatos y score<br/>k=5 · k=10 si enumerativa]
+    M --> N[retrieved_docs<br/>en el State]
 ```
 
 ## Descripción

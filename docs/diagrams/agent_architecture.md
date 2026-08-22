@@ -11,22 +11,22 @@ graph LR
         GEN[Generator]
     end
 
-    subgraph CAPA_TOOLS["Herramientas — Tools"]
-        AZ[AzureSearchTool\nazure_search.py]
-        SQL[SQLiteTool\nsqlite_query.py]
-        LLM[Azure OpenAI\nGPT-4o]
-    end
-
-    subgraph CAPA_DATOS["Capa de Datos"]
-        IDX[(Azure AI Search\nuniversity-corpus\n94 chunks)]
-        DB[(SQLite\nstudents.db\n50 alumnos)]
-    end
-
     subgraph CAPA_PROMPTS["Prompts"]
         PR[router_prompt.py]
         PG[guardrail_prompt.py]
         PRET[retriever_prompt.py]
-        PGEN[generator_prompt.py\n+ persona.py]
+        PGEN[generator_prompt.py<br/>+ persona.py]
+    end
+
+    subgraph CAPA_TOOLS["Herramientas"]
+        AZ[AzureSearchTool<br/>azure_search.py]
+        SQL[SQLiteTool<br/>sqlite_query.py]
+        LLM[Azure OpenAI<br/>GPT-4o]
+    end
+
+    subgraph CAPA_DATOS["Capa de Datos"]
+        IDX[(Azure AI Search<br/>university-corpus<br/>94 chunks)]
+        DB[(SQLite<br/>students.db<br/>50 alumnos)]
     end
 
     R --> PR
